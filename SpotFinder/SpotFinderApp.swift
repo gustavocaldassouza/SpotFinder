@@ -11,7 +11,7 @@ import SwiftUI
 struct SpotFinderApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MapScreen()
         }
     }
 }
