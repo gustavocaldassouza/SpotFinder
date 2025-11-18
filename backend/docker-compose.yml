@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: spotfinder-db
+    environment:
+      POSTGRES_USER: spotfinder
+      POSTGRES_PASSWORD: spotfinder123
+      POSTGRES_DB: spotfinder
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U spotfinder']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spotfinder-api
+    ports:
+      - '3000:3000'
+    environment:
+      DATABASE_URL: postgresql://spotfinder:spotfinder123@postgres:5432/spotfinder
+      DATABASE_SSL: 'false'
+      NODE_ENV: production
+      PORT: 3000
+      LOG_LEVEL: info
+      WEBSOCKET_CORS_ORIGIN: http://localhost:3000
+      DEFAULT_SEARCH_RADIUS: 500
+      REPORT_EXPIRATION_TIME: 1800000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  postgres-data:
