@@ -10,21 +10,24 @@
 		CF3996522ECBC54B005CD021 /* SpotFinder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpotFinder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		CF3996542ECBC54B005CD021 /* SpotFinder */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				CF3996602ECBC54C005CD021 /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
-			);
-			path = SpotFinder;
-			sourceTree = "<group>";
-		};
-		CF3996602ECBC54C005CD021 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		CF3996602ECBC54C005CD021 /* Exceptions for "SpotFinder" folder in "SpotFinder" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
 			target = CF3996512ECBC54B005CD021 /* SpotFinder */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		CF3996542ECBC54B005CD021 /* SpotFinder */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				CF3996602ECBC54C005CD021 /* Exceptions for "SpotFinder" folder in "SpotFinder" target */,
+			);
+			path = SpotFinder;
+			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 

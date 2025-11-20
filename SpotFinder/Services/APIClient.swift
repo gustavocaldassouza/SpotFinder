@@ -131,13 +131,30 @@ actor APIClient {
         
         let rateRequest = RateReportRequest(isUpvote: isUpvote)
         let encoder = JSONEncoder()
-        request.httpBody = try encoder.encode(rateRequest)
+        
+        do {
+            let jsonData = try encoder.encode(rateRequest)
+            
+            // Debug: Print the JSON being sent
+            if let jsonString = String(data: jsonData, encoding: .utf8) {
+                print("📤 Rating request JSON: \(jsonString)")
+            }
+            
+            request.httpBody = jsonData
+        } catch {
+            print("❌ Failed to encode rating request: \(error)")
+            throw APIError.networkError(error)
+        }
         
         do {
             let (data, response) = try await session.data(for: request)
             
             guard let httpResponse = response as? HTTPURLResponse else {
                 throw APIError.invalidResponse
+            }
+            
+            if let responseString = String(data: data, encoding: .utf8) {
+                print("📥 Rating response [\(httpResponse.statusCode)]: \(responseString)")
             }
             
             guard (200...299).contains(httpResponse.statusCode) else {

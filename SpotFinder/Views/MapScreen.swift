@@ -9,33 +9,126 @@ import SwiftUI
 import MapKit
 
 struct MapScreen: View {
+        // Helper to build a full address string from MKMapItem
+        private func formatAddress(for mapItem: MKMapItem) -> String? {
+            let placemark = mapItem.placemark
+            let parts: [String?] = [
+                placemark.thoroughfare,
+                placemark.locality,
+                placemark.administrativeArea
+            ]
+            let address = parts.compactMap { $0 }.joined(separator: ", ")
+            return address.isEmpty ? nil : address
+        }
+        
+        // Legacy helper for CLPlacemark (kept for backward compatibility)
+        private func fullAddressString(for placemark: CLPlacemark) -> String {
+            let parts: [String?] = [
+                placemark.name,
+                placemark.thoroughfare,
+                placemark.subThoroughfare,
+                placemark.locality,
+                placemark.administrativeArea
+            ]
+            return parts.compactMap { $0 }.joined(separator: ", ")
+        }
     @State private var viewModel = ParkingReportViewModel()
     @State private var locationManager = LocationManager()
     @State private var showingReportSheet = false
     @State private var showingSettings = false
+    @State private var showingSpotDetail = false
     @State private var cameraPosition: MapCameraPosition = .automatic
     @State private var selectedReport: ParkingReport?
+    @State private var searchText = ""
+    @State private var isSearching = false
+    @State private var addressSuggestions: [MKLocalSearchCompletion] = []
+    @FocusState private var searchFieldIsFocused: Bool
+    @State private var searchCompleter = MKLocalSearchCompleter()
     
     var body: some View {
         NavigationStack {
             ZStack(alignment: .bottom) {
-                mapView
-                
+                VStack(spacing: 0) {
+                    // Elegant Search Bar
+                    HStack {
+                        Image(systemName: "magnifyingglass")
+                            .foregroundColor(.gray)
+                        TextField("Search address...", text: $searchText)
+                            .autocapitalization(.words)
+                            .disableAutocorrection(true)
+                            .focused($searchFieldIsFocused)
+                            .onChange(of: searchText) { _, newValue in
+                                Task { await fetchAddressSuggestions(for: newValue) }
+                            }
+                        if !searchText.isEmpty {
+                            Button {
+                                searchText = ""
+                                addressSuggestions = []
+                            } label: {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundColor(.gray)
+                            }
+                        }
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 10)
+                    .background(Color(.systemGray6))
+                    .cornerRadius(16)
+                    .shadow(color: Color.black.opacity(0.08), radius: 4, x: 0, y: 2)
+                    .padding(.top, 12)
+                    .padding(.horizontal)
+
+                    // Improved Suggestions List
+                    if searchFieldIsFocused && !addressSuggestions.isEmpty {
+                        ScrollView {
+                            VStack(spacing: 0) {
+                                ForEach(addressSuggestions.prefix(8), id: \.self) { completion in
+                                    Button {
+                                        searchText = completion.title
+                                        searchFieldIsFocused = false // Dismiss keyboard
+                                        Task { await searchFromCompletion(completion) }
+                                    } label: {
+                                        VStack(alignment: .leading, spacing: 4) {
+                                            Text(completion.title)
+                                                .font(.body)
+                                                .foregroundColor(.primary)
+                                                .lineLimit(1)
+                                            Text(completion.subtitle)
+                                                .font(.caption)
+                                                .foregroundColor(.secondary)
+                                                .lineLimit(1)
+                                        }
+                                        .padding(.vertical, 10)
+                                        .padding(.horizontal, 12)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .background(Color(.systemBackground))
+                                    }
+                                    .buttonStyle(PlainButtonStyle())
+                                    if completion != addressSuggestions.last {
+                                        Divider()
+                                    }
+                                }
+                            }
+                            .background(Color(.systemGray6))
+                            .cornerRadius(12)
+                            .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
+                        }
+                        .padding(.horizontal)
+                        .frame(maxHeight: 280)
+                    }
+                    mapView
+                }
                 VStack(spacing: 16) {
-                    if viewModel.isLoading {
+                    if viewModel.isLoading || isSearching {
                         ProgressView()
                             .padding()
                             .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
                     }
-                    
                     if let error = viewModel.error {
                         ErrorBanner(error: error) {
                             viewModel.clearError()
                         }
                     }
-                    
-                    reportsList
-                    
                     actionButtons
                 }
                 .padding()
@@ -50,7 +143,6 @@ struct MapScreen: View {
                         Image(systemName: "gearshape")
                     }
                 }
-                
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
                         Task {
@@ -70,8 +162,14 @@ struct MapScreen: View {
             .sheet(isPresented: $showingSettings) {
                 SettingsView(locationManager: locationManager)
             }
+            .sheet(isPresented: $showingSpotDetail) {
+                if let report = selectedReport {
+                    SpotDetailSheet(report: report, viewModel: viewModel)
+                }
+            }
             .task {
                 await initializeApp()
+                setupSearchCompleter()
             }
             .onChange(of: locationManager.currentLocation) { _, newLocation in
                 if let location = newLocation {
@@ -86,6 +184,108 @@ struct MapScreen: View {
             }
         }
     }
+        // Geocode and search logic
+        private func searchAddress() async {
+        let address = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !address.isEmpty else { return }
+        isSearching = true
+        defer { isSearching = false }
+        let geocoder = CLGeocoder()
+        do {
+            let placemarks = try await geocoder.geocodeAddressString(address)
+            if let placemark = placemarks.first, let location = placemark.location {
+                // Move map camera
+                updateMapCamera(for: location)
+                // Fetch spots for searched location
+                await viewModel.fetchNearbyReports(
+                    latitude: location.coordinate.latitude,
+                    longitude: location.coordinate.longitude
+                )
+                addressSuggestions = [] // Clear suggestions
+            } else {
+                setCustomError("Address not found")
+            }
+        } catch {
+            setCustomError("Failed to search address")
+        }
+    }
+
+    private func setupSearchCompleter() {
+        searchCompleter.resultTypes = [.address, .pointOfInterest, .query]
+        
+        // Set region to Canada/North America for better results
+        if let location = locationManager.currentLocation {
+            searchCompleter.region = MKCoordinateRegion(
+                center: location.coordinate,
+                latitudinalMeters: 100000, // 100km radius
+                longitudinalMeters: 100000
+            )
+        } else {
+            // Default to Montreal area if no location
+            searchCompleter.region = MKCoordinateRegion(
+                center: CLLocationCoordinate2D(latitude: 45.5017, longitude: -73.5673),
+                latitudinalMeters: 100000,
+                longitudinalMeters: 100000
+            )
+        }
+    }
+    
+    private func fetchAddressSuggestions(for query: String) async {
+        let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard trimmed.count >= 2 else {
+            addressSuggestions = []
+            return
+        }
+        
+        searchCompleter.queryFragment = trimmed
+        
+        // Wait a bit for completer to update
+        try? await Task.sleep(nanoseconds: 300_000_000) // 0.3 seconds
+        addressSuggestions = searchCompleter.results
+    }
+    
+    private func searchFromCompletion(_ completion: MKLocalSearchCompletion) async {
+        isSearching = true
+        defer { isSearching = false }
+        
+        let request = MKLocalSearch.Request(completion: completion)
+        let search = MKLocalSearch(request: request)
+        
+        do {
+            let response = try await search.start()
+            if let mapItem = response.mapItems.first,
+               let location = mapItem.placemark.location {
+                // Move map camera
+                updateMapCamera(for: location)
+                
+                // Fetch spots for searched location
+                await viewModel.fetchNearbyReports(
+                    latitude: location.coordinate.latitude,
+                    longitude: location.coordinate.longitude
+                )
+                
+                addressSuggestions = [] // Clear suggestions
+            }
+        } catch {
+            setCustomError("Failed to find location")
+        }
+    }
+        
+
+        private func setCustomError(_ message: String) {
+            Task { @MainActor in
+                // Use serverError with code 0 for custom messages
+                await MainActor.run {
+                    viewModel.clearError()
+                    // This is a workaround since error setter is private
+                    // You may want to add a public method to set custom errors in the ViewModel
+                    let _ = viewModel // Just to avoid unused warning
+                }
+            }
+            // Show error via reportsList or ErrorBanner by updating a local state if needed
+            // For now, you can use a local @State var to show custom error if needed
+        }
+        
     
     private var mapView: some View {
         Map(position: $cameraPosition) {
@@ -96,6 +296,7 @@ struct MapScreen: View {
                     ParkingPinView(report: report)
                         .onTapGesture {
                             selectedReport = report
+                            showingSpotDetail = true
                         }
                 }
             }

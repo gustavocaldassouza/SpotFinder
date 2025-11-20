@@ -54,8 +54,10 @@ export class ParkingController {
   }
 
   @Put(':id/rate')
-  @UsePipes(new ZodValidationPipe(rateReportSchema))
-  async rateReport(@Param('id') id: string, @Body() dto: RateReportDto) {
+  async rateReport(
+    @Param('id') id: string,
+    @Body(new ZodValidationPipe(rateReportSchema)) dto: RateReportDto,
+  ) {
     const result = await this.parkingService.rateReport(id, dto);
     return result;
   }
