@@ -1,23 +1,27 @@
 # SpotFinder Backend - Heroku Deployment Guide
 
 ## Prerequisites
+
 1. Install Heroku CLI: `brew tap heroku/brew && brew install heroku`
 2. Login to Heroku: `heroku login`
 
 ## Initial Setup
 
 ### 1. Create Heroku App
+
 ```bash
 cd backend
 heroku create spotfinder-backend
 ```
 
 ### 2. Add PostgreSQL Database
+
 ```bash
 heroku addons:create heroku-postgresql:essential-0
 ```
 
 ### 3. Set Environment Variables
+
 ```bash
 heroku config:set NODE_ENV=production
 heroku config:set LOG_LEVEL=info
@@ -28,6 +32,7 @@ heroku config:set DATABASE_SSL=true
 ```
 
 ### 4. Deploy to Heroku
+
 ```bash
 # Initialize git in backend folder (if not already done)
 git init
@@ -42,6 +47,7 @@ git push heroku main
 ```
 
 ### 5. Run Database Migrations
+
 ```bash
 # Set DATABASE_URL locally to run migrations
 heroku config:get DATABASE_URL
@@ -55,6 +61,7 @@ heroku run npm run db:push
 ```
 
 ### 6. Open Your App
+
 ```bash
 heroku open
 heroku logs --tail
@@ -100,10 +107,12 @@ heroku ps:scale web=1
 ## Environment Variables on Heroku
 
 Your app automatically gets:
+
 - `DATABASE_URL` - PostgreSQL connection string (from addon)
 - `PORT` - Port to bind to (set by Heroku)
 
 You set:
+
 - `NODE_ENV=production`
 - `LOG_LEVEL=info`
 - `WEBSOCKET_CORS_ORIGIN=*`
@@ -114,17 +123,20 @@ You set:
 ## Troubleshooting
 
 ### App crashes on startup
+
 ```bash
 heroku logs --tail
 ```
 
 ### Database connection issues
+
 ```bash
 heroku config:get DATABASE_URL
 heroku pg:info
 ```
 
 ### Build failures
+
 ```bash
 heroku builds
 heroku builds:info <build-id>
