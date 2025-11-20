@@ -58,7 +58,7 @@ export class ParkingWebSocketGateway
 
       // Join the room for location-based updates
       client.join(roomName);
-      
+
       this.logger.debug(
         `Client ${client.id} subscribed to nearby updates: ${roomName}`,
       );
@@ -82,9 +82,9 @@ export class ParkingWebSocketGateway
     // Leave all rooms except the default one
     const rooms = Array.from(client.rooms).filter((room) => room !== client.id);
     rooms.forEach((room) => client.leave(room));
-    
+
     this.logger.debug(`Client ${client.id} unsubscribed from all rooms`);
-    
+
     return {
       success: true,
       message: 'Unsubscribed from all updates',

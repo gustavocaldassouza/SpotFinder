@@ -17,10 +17,7 @@ import {
   type CreateReportDto,
 } from './dto/create-report.dto';
 import { rateReportSchema, type RateReportDto } from './dto/rate-report.dto';
-import {
-  nearbyQuerySchema,
-  type NearbyQueryDto,
-} from './dto/nearby-query.dto';
+import { nearbyQuerySchema, type NearbyQueryDto } from './dto/nearby-query.dto';
 
 @Controller('api/parking-reports')
 export class ParkingController {

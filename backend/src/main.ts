@@ -5,13 +5,13 @@ import { Logger } from 'nestjs-pino';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
-  
+
   // Use pino logger
   app.useLogger(app.get(Logger));
-  
+
   // Global exception filter
   app.useGlobalFilters(new AllExceptionsFilter());
-  
+
   // Enable CORS
   app.enableCors({
     origin: process.env.WEBSOCKET_CORS_ORIGIN || '*',
@@ -20,7 +20,7 @@ async function bootstrap() {
 
   const port = process.env.PORT || 3000;
   await app.listen(port, '0.0.0.0');
-  
+
   console.log(`🚀 SpotFinder API running on port ${port}`);
 }
 bootstrap();

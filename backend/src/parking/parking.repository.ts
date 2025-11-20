@@ -2,8 +2,16 @@ import { Injectable, Inject } from '@nestjs/common';
 import { eq, and, gte, lte, sql } from 'drizzle-orm';
 import type { Database } from '../database/client';
 import { DATABASE_TOKEN } from '../database/database.module';
-import { parkingReports, reportRatings, NewParkingReport, NewReportRating } from '../database/schema';
-import { ParkingReportEntity, ParkingReportWithDistance } from './entities/parking-report.entity';
+import {
+  parkingReports,
+  reportRatings,
+  NewParkingReport,
+  NewReportRating,
+} from '../database/schema';
+import {
+  ParkingReportEntity,
+  ParkingReportWithDistance,
+} from './entities/parking-report.entity';
 
 @Injectable()
 export class ParkingRepository {
@@ -35,7 +43,7 @@ export class ParkingRepository {
     radiusMeters: number,
   ): Promise<ParkingReportWithDistance[]> {
     const now = new Date();
-    
+
     // Haversine formula for distance calculation in SQL
     const distance = sql<number>`
       (6371000 * acos(
@@ -66,8 +74,8 @@ export class ParkingRepository {
         and(
           eq(parkingReports.isActive, true),
           gte(parkingReports.expiresAt, now),
-          sql`${distance} <= ${radiusMeters}`
-        )
+          sql`${distance} <= ${radiusMeters}`,
+        ),
       )
       .orderBy(distance);
 
@@ -113,15 +121,14 @@ export class ParkingRepository {
       .where(
         and(
           eq(parkingReports.isActive, true),
-          lte(parkingReports.expiresAt, now)
-        )
+          lte(parkingReports.expiresAt, now),
+        ),
       );
   }
 
   private mapToEntity(report: any): ParkingReportEntity {
-    const accuracyRating = report.totalRatings > 0 
-      ? report.sumRatings / report.totalRatings 
-      : 0;
+    const accuracyRating =
+      report.totalRatings > 0 ? report.sumRatings / report.totalRatings : 0;
 
     return {
       id: report.id,

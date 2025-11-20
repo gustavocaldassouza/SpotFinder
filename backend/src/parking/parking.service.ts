@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ParkingRepository } from './parking.repository';
 import { CreateReportDto } from './dto/create-report.dto';
@@ -38,7 +42,7 @@ export class ParkingService {
 
     // Get the full report with all details
     const reportWithDetails = await this.repository.findById(report.id);
-    
+
     if (reportWithDetails) {
       // Broadcast new report via WebSocket
       this.wsService.broadcastNewReport({

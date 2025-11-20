@@ -5,7 +5,9 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const envSchema = z.object({
-  NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+  NODE_ENV: z
+    .enum(['development', 'production', 'test'])
+    .default('development'),
   PORT: z.string().default('3000'),
   // Make DATABASE_URL optional here and provide a sensible local default below
   DATABASE_URL: z.string().optional(),
@@ -33,7 +35,9 @@ export const validateEnvironment = (): Environment => {
   // NOTE: For production, you MUST set DATABASE_URL explicitly (e.g. in your deployment environment).
   if (!env.DATABASE_URL) {
     const fallback = 'postgresql://postgres:postgres@localhost:5432/spotfinder';
-    console.warn(`⚠️  DATABASE_URL not set — falling back to local default: ${fallback}`);
+    console.warn(
+      `⚠️  DATABASE_URL not set — falling back to local default: ${fallback}`,
+    );
     env.DATABASE_URL = fallback;
   }
 

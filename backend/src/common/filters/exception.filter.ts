@@ -23,7 +23,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     if (exception instanceof HttpException) {
       status = exception.getStatus();
       const exceptionResponse = exception.getResponse();
-      
+
       if (typeof exceptionResponse === 'object') {
         message = (exceptionResponse as any).message || message;
         errors = (exceptionResponse as any).errors;
@@ -33,7 +33,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
     } else if (exception instanceof Error) {
       message = exception.message;
       // Log the full error stack for debugging
-      this.logger.error(`Unhandled error: ${exception.message}`, exception.stack);
+      this.logger.error(
+        `Unhandled error: ${exception.message}`,
+        exception.stack,
+      );
     } else {
       this.logger.error('Unknown exception type:', exception);
     }
