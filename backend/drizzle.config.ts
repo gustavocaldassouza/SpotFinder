@@ -8,8 +8,9 @@ export default defineConfig({
   out: './src/database/migrations',
   dialect: 'postgresql',
   dbCredentials: {
-    url: process.env.DATABASE_URL || '',
-    ssl: process.env.DATABASE_SSL === 'true' ? 'require' : false,
+    url: process.env.DATABASE_SSL === 'true' 
+      ? `${process.env.DATABASE_URL}?sslmode=require`
+      : process.env.DATABASE_URL || '',
   },
   verbose: true,
   strict: true,
