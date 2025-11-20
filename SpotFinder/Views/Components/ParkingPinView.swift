@@ -53,36 +53,39 @@ struct ParkingPinView: View {
             id: "1",
             latitude: 37.7749,
             longitude: -122.4194,
-            streetName: "Market St",
-            crossStreets: "5th St",
+            description: "Near coffee shop",
             status: .available,
             createdAt: Date(),
-            upvotes: 5,
-            downvotes: 1
+            expiresAt: Date().addingTimeInterval(3600),
+            accuracyRating: 0.8,
+            totalRatings: 5,
+            isActive: true
         ))
         
         ParkingPinView(report: ParkingReport(
             id: "2",
             latitude: 37.7749,
             longitude: -122.4194,
-            streetName: "Mission St",
-            crossStreets: "6th St",
+            description: nil,
             status: .taken,
             createdAt: Date(),
-            upvotes: 2,
-            downvotes: 3
+            expiresAt: Date().addingTimeInterval(3600),
+            accuracyRating: -0.3,
+            totalRatings: 2,
+            isActive: true
         ))
         
         ParkingPinView(report: ParkingReport(
             id: "3",
             latitude: 37.7749,
             longitude: -122.4194,
-            streetName: "Valencia St",
-            crossStreets: "16th St",
+            description: "Expired spot",
             status: .available,
             createdAt: Date().addingTimeInterval(-7200),
-            upvotes: 0,
-            downvotes: 0
+            expiresAt: Date().addingTimeInterval(-1),
+            accuracyRating: 0,
+            totalRatings: 0,
+            isActive: false
         ))
     }
     .padding()

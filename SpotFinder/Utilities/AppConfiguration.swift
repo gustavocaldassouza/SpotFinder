@@ -11,7 +11,7 @@ enum AppConfiguration {
     static var apiBaseURL: String {
         // In production, you can read this from Info.plist or environment variables
         #if DEBUG
-        return "http://localhost:3000"
+        return "http://100.85.203.36:3000"
         #else
         return "https://your-production-api.com"
         #endif
@@ -19,7 +19,7 @@ enum AppConfiguration {
     
     static var wsBaseURL: String {
         #if DEBUG
-        return "ws://localhost:3000"
+        return "ws://100.85.203.36:3000"
         #else
         return "wss://your-production-api.com"
         #endif

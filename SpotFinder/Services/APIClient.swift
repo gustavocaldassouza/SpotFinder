@@ -16,7 +16,7 @@ actor APIClient {
     
     private init() {
         // Configure with your backend URL
-        self.baseURL = "http://localhost:3000" // Change this to your actual backend URL
+        self.baseURL = "http://100.85.203.36:3000" // Change this to your actual backend URL
         
         let configuration = URLSessionConfiguration.default
         configuration.timeoutIntervalForRequest = 30

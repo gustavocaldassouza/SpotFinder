@@ -17,18 +17,25 @@ struct ParkingReport: Codable, Identifiable, Sendable, Hashable {
     let id: String
     let latitude: Double
     let longitude: Double
-    let streetName: String
-    let crossStreets: String?
+    let description: String?
     let status: ReportStatus
     let createdAt: Date
-    let upvotes: Int
-    let downvotes: Int
+    let expiresAt: Date
+    let accuracyRating: Double
+    let totalRatings: Int
+    let isActive: Bool
+    let createdAgo: String?
+    let distance: Double?
     
     var coordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
     }
     
     var timeAgoString: String {
+        if let createdAgo = createdAgo {
+            return createdAgo
+        }
+        
         let now = Date()
         let interval = now.timeIntervalSince(createdAt)
         
@@ -48,25 +55,29 @@ struct ParkingReport: Codable, Identifiable, Sendable, Hashable {
     }
     
     var isExpired: Bool {
-        let now = Date()
-        let interval = now.timeIntervalSince(createdAt)
-        return interval > 3600 // Expired after 1 hour
+        return !isActive || Date() > expiresAt
     }
     
     enum CodingKeys: String, CodingKey {
-        case id, latitude, longitude, streetName, crossStreets, status, createdAt, upvotes, downvotes
+        case id, latitude, longitude, description, status, createdAt, expiresAt
+        case accuracyRating, totalRatings, isActive, createdAgo, distance
     }
     
-    init(id: String, latitude: Double, longitude: Double, streetName: String, crossStreets: String?, status: ReportStatus, createdAt: Date, upvotes: Int, downvotes: Int) {
+    init(id: String, latitude: Double, longitude: Double, description: String?, status: ReportStatus, 
+         createdAt: Date, expiresAt: Date, accuracyRating: Double, totalRatings: Int, 
+         isActive: Bool, createdAgo: String? = nil, distance: Double? = nil) {
         self.id = id
         self.latitude = latitude
         self.longitude = longitude
-        self.streetName = streetName
-        self.crossStreets = crossStreets
+        self.description = description
         self.status = status
         self.createdAt = createdAt
-        self.upvotes = upvotes
-        self.downvotes = downvotes
+        self.expiresAt = expiresAt
+        self.accuracyRating = accuracyRating
+        self.totalRatings = totalRatings
+        self.isActive = isActive
+        self.createdAgo = createdAgo
+        self.distance = distance
     }
     
     func hash(into hasher: inout Hasher) {
@@ -76,56 +87,12 @@ struct ParkingReport: Codable, Identifiable, Sendable, Hashable {
     static func == (lhs: ParkingReport, rhs: ParkingReport) -> Bool {
         lhs.id == rhs.id
     }
-    
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        id = try container.decode(String.self, forKey: .id)
-        latitude = try container.decode(Double.self, forKey: .latitude)
-        longitude = try container.decode(Double.self, forKey: .longitude)
-        streetName = try container.decode(String.self, forKey: .streetName)
-        crossStreets = try container.decodeIfPresent(String.self, forKey: .crossStreets)
-        status = try container.decode(ReportStatus.self, forKey: .status)
-        upvotes = try container.decode(Int.self, forKey: .upvotes)
-        downvotes = try container.decode(Int.self, forKey: .downvotes)
-        
-        // Handle date decoding
-        if let dateString = try? container.decode(String.self, forKey: .createdAt) {
-            let formatter = ISO8601DateFormatter()
-            formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-            if let date = formatter.date(from: dateString) {
-                createdAt = date
-            } else {
-                // Fallback without fractional seconds
-                formatter.formatOptions = [.withInternetDateTime]
-                createdAt = formatter.date(from: dateString) ?? Date()
-            }
-        } else {
-            createdAt = Date()
-        }
-    }
-    
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(id, forKey: .id)
-        try container.encode(latitude, forKey: .latitude)
-        try container.encode(longitude, forKey: .longitude)
-        try container.encode(streetName, forKey: .streetName)
-        try container.encodeIfPresent(crossStreets, forKey: .crossStreets)
-        try container.encode(status, forKey: .status)
-        try container.encode(upvotes, forKey: .upvotes)
-        try container.encode(downvotes, forKey: .downvotes)
-        
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        try container.encode(formatter.string(from: createdAt), forKey: .createdAt)
-    }
 }
 
 struct CreateParkingReportRequest: Codable, Sendable {
     let latitude: Double
     let longitude: Double
-    let streetName: String
-    let crossStreets: String?
+    let description: String?
     let status: ReportStatus
 }
 

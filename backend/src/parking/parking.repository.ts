@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { eq, and, gte, sql } from 'drizzle-orm';
+import { eq, and, gte, lte, sql } from 'drizzle-orm';
 import type { Database } from '../database/client';
 import { DATABASE_TOKEN } from '../database/database.module';
 import { parkingReports, reportRatings, NewParkingReport, NewReportRating } from '../database/schema';
@@ -113,7 +113,7 @@ export class ParkingRepository {
       .where(
         and(
           eq(parkingReports.isActive, true),
-          sql`${parkingReports.expiresAt} <= ${now}`
+          lte(parkingReports.expiresAt, now)
         )
       );
   }

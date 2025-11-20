@@ -36,23 +36,13 @@ export class ParkingController {
       query.radius,
     );
 
-    return {
-      success: true,
-      data: {
-        reports,
-        count: reports.length,
-      },
-    };
+    return reports;
   }
 
   @Get(':id')
   async getReportById(@Param('id') id: string) {
     const report = await this.parkingService.getReportById(id);
-
-    return {
-      success: true,
-      data: report,
-    };
+    return report;
   }
 
   @Post()
@@ -60,21 +50,13 @@ export class ParkingController {
   @UsePipes(new ZodValidationPipe(createReportSchema))
   async createReport(@Body() dto: CreateReportDto) {
     const result = await this.parkingService.createReport(dto);
-
-    return {
-      success: true,
-      data: result,
-    };
+    return result;
   }
 
   @Put(':id/rate')
   @UsePipes(new ZodValidationPipe(rateReportSchema))
   async rateReport(@Param('id') id: string, @Body() dto: RateReportDto) {
     const result = await this.parkingService.rateReport(id, dto);
-
-    return {
-      success: true,
-      data: result,
-    };
+    return result;
   }
 }

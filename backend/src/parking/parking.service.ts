@@ -36,18 +36,35 @@ export class ParkingService {
       userId: null,
     });
 
-    // Broadcast new report via WebSocket
+    // Get the full report with all details
     const reportWithDetails = await this.repository.findById(report.id);
+    
     if (reportWithDetails) {
+      // Broadcast new report via WebSocket
       this.wsService.broadcastNewReport({
         ...reportWithDetails,
         createdAgo: calculateTimeAgo(reportWithDetails.createdAt),
       });
+
+      return {
+        ...reportWithDetails,
+        createdAgo: calculateTimeAgo(reportWithDetails.createdAt),
+      };
     }
 
+    // Fallback if full report couldn't be retrieved
     return {
       id: report.id,
+      latitude: dto.latitude,
+      longitude: dto.longitude,
+      status: dto.status,
+      description: dto.description || null,
+      accuracyRating: 0,
+      totalRatings: 0,
+      isActive: true,
       createdAt: report.createdAt,
+      expiresAt: expiresAt,
+      createdAgo: calculateTimeAgo(report.createdAt),
     };
   }
 
@@ -92,9 +109,12 @@ export class ParkingService {
       throw new BadRequestException('Cannot rate an expired report');
     }
 
+    // Convert isUpvote boolean to rating (-1 or 1)
+    const rating = dto.isUpvote ? 1 : -1;
+
     await this.repository.addRating({
       reportId: id,
-      rating: dto.rating,
+      rating,
       userId: userId || null,
     });
 
@@ -109,14 +129,11 @@ export class ParkingService {
       });
 
       return {
-        accuracyRating: updatedReport.accuracyRating,
-        totalRatings: updatedReport.totalRatings,
+        ...updatedReport,
+        createdAgo: calculateTimeAgo(updatedReport.createdAt),
       };
     }
 
-    return {
-      accuracyRating: 0,
-      totalRatings: 0,
-    };
+    throw new NotFoundException(`Failed to retrieve updated report`);
   }
 }

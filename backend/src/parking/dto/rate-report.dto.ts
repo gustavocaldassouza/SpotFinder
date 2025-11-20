@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const rateReportSchema = z.object({
-  rating: z.union([z.literal(1), z.literal(-1)]),
+  isUpvote: z.boolean(),
 });
 
 export type RateReportDto = z.infer<typeof rateReportSchema>;

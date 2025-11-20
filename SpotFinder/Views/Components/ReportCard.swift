@@ -21,12 +21,12 @@ struct ReportCard: View {
                         .font(.title2)
                     
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(report.streetName)
+                        Text(statusText)
                             .font(.headline)
                             .lineLimit(1)
                         
-                        if let crossStreets = report.crossStreets {
-                            Text(crossStreets)
+                        if let description = report.description, !description.isEmpty {
+                            Text(description)
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                                 .lineLimit(1)
@@ -68,6 +68,15 @@ struct ReportCard: View {
         }
     }
     
+    private var statusText: String {
+        switch report.status {
+        case .available:
+            return "Spot Available"
+        case .taken:
+            return "Spot Taken"
+        }
+    }
+    
     private var statusColor: Color {
         if report.isExpired {
             return .gray
@@ -88,22 +97,25 @@ struct ReportCard: View {
             } label: {
                 HStack(spacing: 4) {
                     Image(systemName: "hand.thumbsup.fill")
-                    Text("\(report.upvotes)")
+                    Text("\(report.totalRatings)")
                 }
                 .font(.caption)
-                .foregroundStyle(.green)
+                .foregroundStyle(report.accuracyRating > 0 ? .green : .gray)
             }
             .buttonStyle(.plain)
+            
+            if report.accuracyRating != 0 {
+                Text(String(format: "%.1f", report.accuracyRating))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
             
             Button {
                 onRate(false)
             } label: {
-                HStack(spacing: 4) {
-                    Image(systemName: "hand.thumbsdown.fill")
-                    Text("\(report.downvotes)")
-                }
-                .font(.caption)
-                .foregroundStyle(.red)
+                Image(systemName: "hand.thumbsdown.fill")
+                    .font(.caption)
+                    .foregroundStyle(.red)
             }
             .buttonStyle(.plain)
         }
@@ -118,12 +130,13 @@ struct ReportCard: View {
                     id: "1",
                     latitude: 37.7749,
                     longitude: -122.4194,
-                    streetName: "Market Street",
-                    crossStreets: "5th & 6th St",
+                    description: "Near the coffee shop",
                     status: .available,
                     createdAt: Date().addingTimeInterval(-120),
-                    upvotes: 5,
-                    downvotes: 1
+                    expiresAt: Date().addingTimeInterval(3600),
+                    accuracyRating: 0.8,
+                    totalRatings: 5,
+                    isActive: true
                 ),
                 onTap: {},
                 onRate: { _ in }
@@ -134,12 +147,13 @@ struct ReportCard: View {
                     id: "2",
                     latitude: 37.7749,
                     longitude: -122.4194,
-                    streetName: "Mission Street",
-                    crossStreets: nil,
+                    description: nil,
                     status: .taken,
                     createdAt: Date().addingTimeInterval(-3600),
-                    upvotes: 2,
-                    downvotes: 3
+                    expiresAt: Date().addingTimeInterval(-1),
+                    accuracyRating: -0.5,
+                    totalRatings: 3,
+                    isActive: false
                 ),
                 onTap: {},
                 onRate: { _ in }

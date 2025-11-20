@@ -13,8 +13,7 @@ struct ReportSheet: View {
     let locationManager: LocationManager
     let viewModel: ParkingReportViewModel
     
-    @State private var streetName = ""
-    @State private var crossStreets = ""
+    @State private var description = ""
     @State private var reportStatus: ReportStatus = .available
     @State private var isSubmitting = false
     @State private var showError = false
@@ -50,17 +49,13 @@ struct ReportSheet: View {
                 }
                 
                 Section {
-                    TextField("Street Name", text: $streetName)
-                        .textInputAutocapitalization(.words)
-                        .autocorrectionDisabled()
-                    
-                    TextField("Cross Streets (optional)", text: $crossStreets)
-                        .textInputAutocapitalization(.words)
-                        .autocorrectionDisabled()
+                    TextField("Description (optional)", text: $description, axis: .vertical)
+                        .textInputAutocapitalization(.sentences)
+                        .lineLimit(3...6)
                 } header: {
                     Text("Details")
                 } footer: {
-                    Text("Help others find the spot by providing the street name")
+                    Text("Add any helpful details about the parking spot")
                 }
             }
             .navigationTitle("Report Parking Spot")
@@ -99,7 +94,6 @@ struct ReportSheet: View {
     }
     
     private var isFormValid: Bool {
-        !streetName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
         locationManager.currentLocation != nil
     }
     
@@ -115,8 +109,7 @@ struct ReportSheet: View {
         let success = await viewModel.createReport(
             latitude: location.coordinate.latitude,
             longitude: location.coordinate.longitude,
-            streetName: streetName.trimmingCharacters(in: .whitespacesAndNewlines),
-            crossStreets: crossStreets.isEmpty ? nil : crossStreets.trimmingCharacters(in: .whitespacesAndNewlines),
+            description: description.isEmpty ? nil : description.trimmingCharacters(in: .whitespacesAndNewlines),
             status: reportStatus
         )
         

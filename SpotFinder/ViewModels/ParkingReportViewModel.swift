@@ -76,12 +76,11 @@ final class ParkingReportViewModel {
         isLoading = false
     }
     
-    func createReport(latitude: Double, longitude: Double, streetName: String, crossStreets: String?, status: ReportStatus) async -> Bool {
+    func createReport(latitude: Double, longitude: Double, description: String?, status: ReportStatus) async -> Bool {
         let request = CreateParkingReportRequest(
             latitude: latitude,
             longitude: longitude,
-            streetName: streetName,
-            crossStreets: crossStreets,
+            description: description,
             status: status
         )
         

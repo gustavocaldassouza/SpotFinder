@@ -92,7 +92,7 @@ struct MapScreen: View {
             UserAnnotation()
             
             ForEach(viewModel.reports) { report in
-                Annotation(report.streetName, coordinate: report.coordinate) {
+                Annotation(annotationTitle(for: report), coordinate: report.coordinate) {
                     ParkingPinView(report: report)
                         .onTapGesture {
                             selectedReport = report
@@ -166,6 +166,13 @@ struct MapScreen: View {
     private func refreshLocation() async {
         guard let location = locationManager.currentLocation else { return }
         await viewModel.refreshReports(at: location)
+    }
+    
+    private func annotationTitle(for report: ParkingReport) -> String {
+        if let description = report.description, !description.isEmpty {
+            return description
+        }
+        return report.status == .available ? "Spot Available" : "Spot Taken"
     }
 }
 
