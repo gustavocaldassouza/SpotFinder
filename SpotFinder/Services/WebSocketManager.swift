@@ -31,7 +31,7 @@ final class WebSocketManager: NSObject, Sendable {
         guard !isConnected else { return }
         
         // Configure with your backend WebSocket URL
-        let urlString = "ws://100.85.203.36:3000/api/parking-reports/ws?lat=\(latitude)&lng=\(longitude)"
+        let urlString = "\(AppConfiguration.wsBaseURL)/api/parking-reports/ws?lat=\(latitude)&lng=\(longitude)"
         
         guard let url = URL(string: urlString) else {
             print("Invalid WebSocket URL")
