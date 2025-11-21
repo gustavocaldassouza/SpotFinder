@@ -44,7 +44,6 @@ export class ParkingRepository {
   ): Promise<ParkingReportWithDistance[]> {
     const now = new Date();
 
-    // Haversine formula for distance calculation in SQL
     const distance = sql<number>`
       (6371000 * acos(
         cos(radians(${latitude})) * 
@@ -100,7 +99,6 @@ export class ParkingRepository {
       .values(data)
       .returning();
 
-    // Update the report's rating aggregates
     await this.db
       .update(parkingReports)
       .set({

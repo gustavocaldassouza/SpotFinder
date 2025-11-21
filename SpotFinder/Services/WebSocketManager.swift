@@ -30,11 +30,9 @@ final class WebSocketManager: NSObject, Sendable {
     func connect(latitude: Double, longitude: Double) {
         guard !isConnected else { return }
         
-        // Configure with your backend WebSocket URL
         let urlString = "\(AppConfiguration.wsBaseURL)/api/parking-reports/ws?lat=\(latitude)&lng=\(longitude)"
         
         guard let url = URL(string: urlString) else {
-            print("Invalid WebSocket URL")
             return
         }
         
@@ -88,7 +86,7 @@ final class WebSocketManager: NSObject, Sendable {
             let report = try decoder.decode(ParkingReport.self, from: data)
             reportPublisher.send(report)
         } catch {
-            print("Failed to decode WebSocket message: \(error)")
+            return
         }
     }
     
@@ -96,25 +94,18 @@ final class WebSocketManager: NSObject, Sendable {
         isConnected = false
         webSocketTask = nil
         
-        // Attempt to reconnect with exponential backoff
         if shouldReconnect && reconnectAttempts < maxReconnectAttempts {
             reconnectAttempts += 1
             let delay = pow(2.0, Double(reconnectAttempts))
             
             Task { @MainActor in
                 try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
-                // Note: You'll need to store lat/lng to reconnect
-                // For now, this is a placeholder
             }
         }
     }
     
     func sendMessage(_ message: String) {
         let message = URLSessionWebSocketTask.Message.string(message)
-        webSocketTask?.send(message) { error in
-            if let error = error {
-                print("WebSocket send error: \(error)")
-            }
-        }
+        webSocketTask?.send(message) { _ in }
     }
 }

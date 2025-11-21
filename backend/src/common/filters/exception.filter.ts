@@ -32,7 +32,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
       }
     } else if (exception instanceof Error) {
       message = exception.message;
-      // Log the full error stack for debugging
       this.logger.error(
         `Unhandled error: ${exception.message}`,
         exception.stack,

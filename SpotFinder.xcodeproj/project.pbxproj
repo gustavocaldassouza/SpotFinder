@@ -269,6 +269,7 @@
 				DEVELOPMENT_TEAM = A53S72FUUL;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = SpotFinder/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -296,6 +297,7 @@
 				DEVELOPMENT_TEAM = A53S72FUUL;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = SpotFinder/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

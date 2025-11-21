@@ -9,8 +9,7 @@ import SwiftUI
 import MapKit
 
 struct MapScreen: View {
-        // Helper to build a full address string from MKMapItem
-        private func formatAddress(for mapItem: MKMapItem) -> String? {
+    private func formatAddress(for mapItem: MKMapItem) -> String? {
             let placemark = mapItem.placemark
             let parts: [String?] = [
                 placemark.thoroughfare,
@@ -21,7 +20,6 @@ struct MapScreen: View {
             return address.isEmpty ? nil : address
         }
         
-        // Legacy helper for CLPlacemark (kept for backward compatibility)
         private func fullAddressString(for placemark: CLPlacemark) -> String {
             let parts: [String?] = [
                 placemark.name,
@@ -49,7 +47,6 @@ struct MapScreen: View {
         NavigationStack {
             ZStack(alignment: .bottom) {
                 VStack(spacing: 0) {
-                    // Elegant Search Bar
                     HStack {
                         Image(systemName: "magnifyingglass")
                             .foregroundColor(.gray)
@@ -78,7 +75,6 @@ struct MapScreen: View {
                     .padding(.top, 12)
                     .padding(.horizontal)
 
-                    // Improved Suggestions List
                     if searchFieldIsFocused && !addressSuggestions.isEmpty {
                         ScrollView {
                             VStack(spacing: 0) {
@@ -184,8 +180,7 @@ struct MapScreen: View {
             }
         }
     }
-        // Geocode and search logic
-        private func searchAddress() async {
+    private func searchAddress() async {
         let address = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !address.isEmpty else { return }
         isSearching = true
@@ -194,14 +189,12 @@ struct MapScreen: View {
         do {
             let placemarks = try await geocoder.geocodeAddressString(address)
             if let placemark = placemarks.first, let location = placemark.location {
-                // Move map camera
                 updateMapCamera(for: location)
-                // Fetch spots for searched location
                 await viewModel.fetchNearbyReports(
                     latitude: location.coordinate.latitude,
                     longitude: location.coordinate.longitude
                 )
-                addressSuggestions = [] // Clear suggestions
+                addressSuggestions = []
             } else {
                 setCustomError("Address not found")
             }
@@ -213,7 +206,6 @@ struct MapScreen: View {
     private func setupSearchCompleter() {
         searchCompleter.resultTypes = [.address, .pointOfInterest, .query]
         
-        // Set region to Canada/North America for better results
         if let location = locationManager.currentLocation {
             searchCompleter.region = MKCoordinateRegion(
                 center: location.coordinate,
@@ -221,7 +213,6 @@ struct MapScreen: View {
                 longitudinalMeters: 100000
             )
         } else {
-            // Default to Montreal area if no location
             searchCompleter.region = MKCoordinateRegion(
                 center: CLLocationCoordinate2D(latitude: 45.5017, longitude: -73.5673),
                 latitudinalMeters: 100000,
@@ -239,8 +230,7 @@ struct MapScreen: View {
         
         searchCompleter.queryFragment = trimmed
         
-        // Wait a bit for completer to update
-        try? await Task.sleep(nanoseconds: 300_000_000) // 0.3 seconds
+        try? await Task.sleep(nanoseconds: 300_000_000)
         addressSuggestions = searchCompleter.results
     }
     
@@ -255,16 +245,14 @@ struct MapScreen: View {
             let response = try await search.start()
             if let mapItem = response.mapItems.first,
                let location = mapItem.placemark.location {
-                // Move map camera
                 updateMapCamera(for: location)
                 
-                // Fetch spots for searched location
                 await viewModel.fetchNearbyReports(
                     latitude: location.coordinate.latitude,
                     longitude: location.coordinate.longitude
                 )
                 
-                addressSuggestions = [] // Clear suggestions
+                addressSuggestions = []
             }
         } catch {
             setCustomError("Failed to find location")
@@ -274,16 +262,11 @@ struct MapScreen: View {
 
         private func setCustomError(_ message: String) {
             Task { @MainActor in
-                // Use serverError with code 0 for custom messages
                 await MainActor.run {
                     viewModel.clearError()
-                    // This is a workaround since error setter is private
-                    // You may want to add a public method to set custom errors in the ViewModel
-                    let _ = viewModel // Just to avoid unused warning
+                    let _ = viewModel
                 }
             }
-            // Show error via reportsList or ErrorBanner by updating a local state if needed
-            // For now, you can use a local @State var to show custom error if needed
         }
         
     
@@ -348,7 +331,6 @@ struct MapScreen: View {
     private func initializeApp() async {
         locationManager.requestPermission()
         
-        // Wait a bit for permission
         try? await Task.sleep(nanoseconds: 500_000_000)
         
         if locationManager.isAuthorized {

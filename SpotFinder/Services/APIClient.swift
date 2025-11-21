@@ -8,7 +8,6 @@ actor APIClient {
     private let session: URLSession
     
     private init() {
-        // Configure with your backend URL
         self.baseURL = AppConfiguration.apiBaseURL
         
         let configuration = URLSessionConfiguration.default
@@ -18,8 +17,6 @@ actor APIClient {
     }
     
     func updateBaseURL(_ url: String) -> APIClient {
-        // For production, you might want to create a new instance
-        // For now, this is a placeholder
         return self
     }
     
@@ -127,15 +124,8 @@ actor APIClient {
         
         do {
             let jsonData = try encoder.encode(rateRequest)
-            
-            // Debug: Print the JSON being sent
-            if let jsonString = String(data: jsonData, encoding: .utf8) {
-                print("📤 Rating request JSON: \(jsonString)")
-            }
-            
             request.httpBody = jsonData
         } catch {
-            print("❌ Failed to encode rating request: \(error)")
             throw APIError.networkError(error)
         }
         
@@ -144,10 +134,6 @@ actor APIClient {
             
             guard let httpResponse = response as? HTTPURLResponse else {
                 throw APIError.invalidResponse
-            }
-            
-            if let responseString = String(data: data, encoding: .utf8) {
-                print("📥 Rating response [\(httpResponse.statusCode)]: \(responseString)")
             }
             
             guard (200...299).contains(httpResponse.statusCode) else {

@@ -40,13 +40,9 @@ struct ErrorBanner: View {
 
 #Preview {
     VStack {
-        ErrorBanner(error: .networkError(URLError(.notConnectedToInternet))) {
-            print("Dismissed")
-        }
+        ErrorBanner(error: .networkError(URLError(.notConnectedToInternet))) {}
         
-        ErrorBanner(error: .serverError(500, "Internal server error")) {
-            print("Dismissed")
-        }
+        ErrorBanner(error: .serverError(500, "Internal server error")) {}
     }
     .padding()
 }
