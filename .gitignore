@@ -70,3 +70,7 @@ node_modules/
 .env
 .env.local
 .env.*.local
+
+# Environment configuration (contains sensitive URLs)
+SpotFinder/Utilities/Environment.swift
+

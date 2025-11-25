@@ -9,13 +9,21 @@ import Foundation
 
 enum AppConfiguration {
     static var apiBaseURL: String {
-        return "https://spotfinder-backend-6ad1bac86b75.herokuapp.com"
+        #if DEBUG
+        return "http://localhost:3000"
+        #else
+        return Environment.apiBaseURL
+        #endif
     }
     
     static var wsBaseURL: String {
-        return "wss://spotfinder-backend-6ad1bac86b75.herokuapp.com"
+        #if DEBUG
+        return "ws://localhost:3000"
+        #else
+        return Environment.wsBaseURL
+        #endif
     }
     
-    static let nearbyRadius: Double = 500 // meters
-    static let reportExpirationTime: TimeInterval = 3600 // 1 hour
+    static let nearbyRadius: Double = 500
+    static let reportExpirationTime: TimeInterval = 3600
 }

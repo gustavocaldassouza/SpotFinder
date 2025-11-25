@@ -1,0 +1,13 @@
+import Foundation
+
+// TEMPLATE FILE - Copy this to Environment.swift and add your production URLs
+// This file should NOT be committed to git
+
+enum Environment {
+    static let apiBaseURL = "YOUR_PRODUCTION_API_URL_HERE"
+    static let wsBaseURL = "YOUR_PRODUCTION_WS_URL_HERE"
+}
+
+// Example:
+// static let apiBaseURL = "https://your-backend.herokuapp.com"
+// static let wsBaseURL = "wss://your-backend.herokuapp.com"
