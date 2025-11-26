@@ -28,7 +28,7 @@ export class ParkingService {
     );
   }
 
-  async createReport(dto: CreateReportDto) {
+  async createReport(dto: CreateReportDto, userId?: string) {
     const expiresAt = new Date(Date.now() + this.reportExpirationTime);
 
     const report = await this.repository.create({
@@ -37,7 +37,7 @@ export class ParkingService {
       status: dto.status,
       description: dto.description || null,
       expiresAt,
-      userId: null,
+      userId: userId || null,
     });
 
     // Get the full report with all details

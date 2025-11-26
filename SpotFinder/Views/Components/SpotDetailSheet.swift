@@ -11,7 +11,7 @@ import MapKit
 struct SpotDetailSheet: View {
     let report: ParkingReport
     let viewModel: ParkingReportViewModel
-    @Environment(\.dismiss) private var dismiss
+    @Environment(\.dismiss) var dismiss
     @State private var isUpdating = false
     @State private var isRating = false
     

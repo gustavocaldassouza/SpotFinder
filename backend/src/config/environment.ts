@@ -14,6 +14,8 @@ const envSchema = z.object({
   WEBSOCKET_CORS_ORIGIN: z.string().default('http://localhost:3000'),
   DEFAULT_SEARCH_RADIUS: z.string().default('500'),
   REPORT_EXPIRATION_TIME: z.string().default('1800000'),
+  JWT_SECRET: z.string().default('your-secret-key'),
+  JWT_REFRESH_SECRET: z.string().default('your-refresh-secret-key'),
 });
 
 export type Environment = z.infer<typeof envSchema>;
@@ -36,5 +38,5 @@ export const validateEnvironment = (): Environment => {
     env.DATABASE_URL = fallback;
   }
 
-  return env as Environment;
+  return env;
 };

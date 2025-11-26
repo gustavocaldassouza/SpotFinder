@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import { ParkingModule } from './parking/parking.module';
 import { WebSocketModule } from './websocket/websocket.module';
+import { AuthModule } from './auth/auth.module';
 import { validateEnvironment } from './config/environment';
 
 @Module({
@@ -30,6 +31,7 @@ import { validateEnvironment } from './config/environment';
       },
     }),
     DatabaseModule,
+    AuthModule,
     ParkingModule,
     WebSocketModule,
   ],

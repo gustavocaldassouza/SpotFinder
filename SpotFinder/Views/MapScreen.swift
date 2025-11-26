@@ -9,6 +9,8 @@ import SwiftUI
 import MapKit
 
 struct MapScreen: View {
+    @EnvironmentObject var authViewModel: AuthViewModel
+    
     private func formatAddress(for mapItem: MKMapItem) -> String? {
             let placemark = mapItem.placemark
             let parts: [String?] = [

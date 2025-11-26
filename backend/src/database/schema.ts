@@ -10,7 +10,28 @@ import {
   smallint,
   index,
 } from 'drizzle-orm/pg-core';
-import { sql } from 'drizzle-orm';
+
+export const users = pgTable(
+  'users',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    email: varchar('email', { length: 255 }).notNull().unique(),
+    passwordHash: varchar('password_hash', { length: 255 }),
+    firstName: varchar('first_name', { length: 100 }),
+    lastName: varchar('last_name', { length: 100 }),
+    avatarUrl: text('avatar_url'),
+    oauthProvider: varchar('oauth_provider', { length: 50 }),
+    oauthId: varchar('oauth_id', { length: 255 }),
+    refreshToken: text('refresh_token'),
+    isActive: boolean('is_active').default(true).notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    emailIdx: index('idx_user_email').on(table.email),
+    oauthIdx: index('idx_oauth').on(table.oauthProvider, table.oauthId),
+  }),
+);
 
 export const parkingReports = pgTable(
   'parking_reports',
@@ -20,7 +41,9 @@ export const parkingReports = pgTable(
     longitude: real('longitude').notNull(),
     status: varchar('status', { length: 50 }).notNull(),
     description: text('description'),
-    userId: uuid('user_id'),
+    userId: uuid('user_id').references(() => users.id, {
+      onDelete: 'set null',
+    }),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow(),
     expiresAt: timestamp('expires_at').notNull(),
@@ -33,6 +56,7 @@ export const parkingReports = pgTable(
     expiresAtIdx: index('idx_expires_at').on(table.expiresAt),
     statusIdx: index('idx_status').on(table.status),
     isActiveIdx: index('idx_is_active').on(table.isActive),
+    userIdIdx: index('idx_user_id').on(table.userId),
   }),
 );
 
@@ -43,15 +67,20 @@ export const reportRatings = pgTable(
     reportId: uuid('report_id')
       .notNull()
       .references(() => parkingReports.id, { onDelete: 'cascade' }),
-    userId: uuid('user_id'),
+    userId: uuid('user_id').references(() => users.id, {
+      onDelete: 'set null',
+    }),
     rating: smallint('rating').notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
   (table) => ({
     reportIdIdx: index('idx_report_rating').on(table.reportId),
+    userIdIdx: index('idx_rating_user_id').on(table.userId),
   }),
 );
 
+export type User = typeof users.$inferSelect;
+export type NewUser = typeof users.$inferInsert;
 export type ParkingReport = typeof parkingReports.$inferSelect;
 export type NewParkingReport = typeof parkingReports.$inferInsert;
 export type ReportRating = typeof reportRatings.$inferSelect;

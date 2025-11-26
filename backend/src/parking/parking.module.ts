@@ -3,9 +3,10 @@ import { ParkingController } from './parking.controller';
 import { ParkingService } from './parking.service';
 import { ParkingRepository } from './parking.repository';
 import { WebSocketModule } from '../websocket/websocket.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [WebSocketModule],
+  imports: [WebSocketModule, AuthModule],
   controllers: [ParkingController],
   providers: [ParkingService, ParkingRepository],
   exports: [ParkingService],

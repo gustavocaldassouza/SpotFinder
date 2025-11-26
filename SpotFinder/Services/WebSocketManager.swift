@@ -36,12 +36,21 @@ final class WebSocketManager: NSObject, Sendable {
             return
         }
         
-        webSocketTask = session.webSocketTask(with: url)
-        webSocketTask?.resume()
-        isConnected = true
-        reconnectAttempts = 0
+        var request = URLRequest(url: url)
         
-        receiveMessage()
+        // Attach authentication token if available
+        Task {
+            if let token = await AuthService.shared.getAccessToken() {
+                request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            }
+            
+            webSocketTask = session.webSocketTask(with: request)
+            webSocketTask?.resume()
+            isConnected = true
+            reconnectAttempts = 0
+            
+            receiveMessage()
+        }
     }
     
     func disconnect() {
