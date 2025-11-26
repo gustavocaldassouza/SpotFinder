@@ -8,6 +8,9 @@ Real-time parking spot sharing API built with NestJS, TypeScript, Drizzle ORM, a
 - WebSocket support for real-time updates
 - Geographic queries with Haversine formula
 - Type-safe database operations with Drizzle ORM
+- JWT authentication with refresh tokens
+- User account management
+- Per-user rating limits (prevents rating abuse)
 - Runtime validation with Zod
 - Structured logging with Pino
 - Docker support
@@ -51,9 +54,9 @@ API will be available at `http://localhost:3000`
 
 - `GET /health` - Health check
 - `GET /api/parking-reports/nearby?lat=X&lng=Y&radius=500` - Nearby reports
-- `POST /api/parking-reports` - Create report
+- `POST /api/parking-reports` - Create report (requires authentication)
 - `GET /api/parking-reports/:id` - Get report
-- `PUT /api/parking-reports/:id/rate` - Rate report
+- `PUT /api/parking-reports/:id/rate` - Rate report (requires authentication, one rating per user)
 
 ### WebSocket
 
@@ -81,8 +84,10 @@ Connect to `ws://localhost:3000`
 
 - `id` - UUID primary key
 - `report_id` - Foreign key to parking_reports
+- `user_id` - Foreign key to users (required for rating)
 - `rating` - 1 (upvote) or -1 (downvote)
 - `created_at` - Timestamp
+- **Unique constraint on (report_id, user_id)** - Prevents rating abuse
 
 ## Development Commands
 

@@ -8,6 +8,13 @@
       "when": 1764137398980,
       "tag": "0000_glossy_thunderbolts",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1764139856717,
+      "tag": "0001_giant_white_queen",
+      "breakpoints": true
     }
   ]
 }

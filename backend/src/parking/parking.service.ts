@@ -104,6 +104,10 @@ export class ParkingService {
   }
 
   async rateReport(id: string, dto: RateReportDto, userId?: string) {
+    if (!userId) {
+      throw new BadRequestException('Authentication required to rate reports');
+    }
+
     const report = await this.repository.findById(id);
     if (!report) {
       throw new NotFoundException(`Report with ID ${id} not found`);
@@ -116,11 +120,17 @@ export class ParkingService {
     // Convert isUpvote boolean to rating (-1 or 1)
     const rating = dto.isUpvote ? 1 : -1;
 
-    await this.repository.addRating({
+    const result = await this.repository.addRating({
       reportId: id,
       rating,
-      userId: userId || null,
+      userId,
     });
+
+    if (!result) {
+      throw new BadRequestException(
+        'You have already rated this report. Each user can only rate a report once.',
+      );
+    }
 
     // Get updated report
     const updatedReport = await this.repository.findById(id);

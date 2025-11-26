@@ -14,6 +14,9 @@ struct SpotDetailSheet: View {
     @Environment(\.dismiss) var dismiss
     @State private var isUpdating = false
     @State private var isRating = false
+    @State private var showRatingAlert = false
+    @State private var ratingAlertMessage = ""
+    @State private var ratingSuccess = false
     
     var body: some View {
         NavigationStack {
@@ -167,6 +170,15 @@ struct SpotDetailSheet: View {
                     }
                 }
             }
+            .alert(ratingSuccess ? "Thanks!" : "Already Rated", isPresented: $showRatingAlert) {
+                Button("OK") {
+                    if ratingSuccess {
+                        dismiss()
+                    }
+                }
+            } message: {
+                Text(ratingAlertMessage)
+            }
         }
     }
     
@@ -191,11 +203,35 @@ struct SpotDetailSheet: View {
         isRating = true
         defer { isRating = false }
         
+        // Clear any previous error before rating
+        viewModel.clearError()
+        
         await viewModel.rateReport(report.id, isUpvote: isUpvote)
         
-        // Delay slightly to let the user see the update
-        try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 seconds
-        dismiss()
+        // Check if there was an error
+        if let error = viewModel.error {
+            // Check if it's a "already rated" error (400 status)
+            if case .serverError(let code, let message) = error {
+                if code == 400 && (message?.localizedCaseInsensitiveContains("already rated") == true) {
+                    ratingSuccess = false
+                    ratingAlertMessage = "You've already rated this spot. Each user can only rate a report once."
+                    showRatingAlert = true
+                    viewModel.clearError()
+                    return
+                }
+            }
+            // Other error
+            ratingSuccess = false
+            ratingAlertMessage = "Something went wrong. Please try again."
+            showRatingAlert = true
+            viewModel.clearError()
+            return
+        }
+        
+        // Success
+        ratingSuccess = true
+        ratingAlertMessage = "Your feedback helps the community find parking spots more easily!"
+        showRatingAlert = true
     }
     
     private func formatDate(_ date: Date) -> String {

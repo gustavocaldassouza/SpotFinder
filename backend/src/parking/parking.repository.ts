@@ -94,6 +94,23 @@ export class ParkingRepository {
   }
 
   async addRating(data: NewReportRating) {
+    // Check if user already rated this report
+    const [existingRating] = await this.db
+      .select()
+      .from(reportRatings)
+      .where(
+        and(
+          eq(reportRatings.reportId, data.reportId),
+          eq(reportRatings.userId, data.userId!),
+        ),
+      )
+      .limit(1);
+
+    if (existingRating) {
+      // User already rated this report
+      return null;
+    }
+
     const [rating] = await this.db
       .insert(reportRatings)
       .values(data)

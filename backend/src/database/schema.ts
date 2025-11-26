@@ -9,6 +9,7 @@ import {
   boolean,
   smallint,
   index,
+  unique,
 } from 'drizzle-orm/pg-core';
 
 export const users = pgTable(
@@ -67,15 +68,19 @@ export const reportRatings = pgTable(
     reportId: uuid('report_id')
       .notNull()
       .references(() => parkingReports.id, { onDelete: 'cascade' }),
-    userId: uuid('user_id').references(() => users.id, {
-      onDelete: 'set null',
-    }),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
     rating: smallint('rating').notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
   (table) => ({
     reportIdIdx: index('idx_report_rating').on(table.reportId),
     userIdIdx: index('idx_rating_user_id').on(table.userId),
+    uniqueUserRating: unique('unique_user_rating').on(
+      table.reportId,
+      table.userId,
+    ),
   }),
 );
 
