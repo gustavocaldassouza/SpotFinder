@@ -16,7 +16,7 @@ SpotFinder helps drivers find available parking spots in real-time through commu
 - 📍 **Real-time Location** - GPS-based location tracking
 - ⚡ **Live Updates** - WebSocket-powered real-time notifications
 - 👤 **User Authentication** - Secure JWT-based authentication with profiles
-- 👍 **Community Ratings** - Rate parking spot accuracy
+- 👍 **Community Ratings** - Rate parking spot accuracy with abuse prevention (one rating per user)
 - 🔍 **Nearby Search** - Find spots within 500m radius
 - ⏱️ **Time Tracking** - Live timestamps and automatic expiration
 - 🔐 **Secure Storage** - Keychain-based token storage
