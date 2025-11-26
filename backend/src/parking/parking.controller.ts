@@ -9,6 +9,7 @@ import {
   UsePipes,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { ParkingService } from './parking.service';
 import { ZodValidationPipe } from '../common/pipes/validation.pipe';
@@ -18,6 +19,9 @@ import {
 } from './dto/create-report.dto';
 import { rateReportSchema, type RateReportDto } from './dto/rate-report.dto';
 import { nearbyQuerySchema, type NearbyQueryDto } from './dto/nearby-query.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import type { User } from '../database/schema';
 
 @Controller('api/parking-reports')
 export class ParkingController {
@@ -43,19 +47,22 @@ export class ParkingController {
   }
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.CREATED)
   @UsePipes(new ZodValidationPipe(createReportSchema))
-  async createReport(@Body() dto: CreateReportDto) {
-    const result = await this.parkingService.createReport(dto);
+  async createReport(@Body() dto: CreateReportDto, @CurrentUser() user: User) {
+    const result = await this.parkingService.createReport(dto, user.id);
     return result;
   }
 
   @Put(':id/rate')
+  @UseGuards(JwtAuthGuard)
   async rateReport(
     @Param('id') id: string,
     @Body(new ZodValidationPipe(rateReportSchema)) dto: RateReportDto,
+    @CurrentUser() user: User,
   ) {
-    const result = await this.parkingService.rateReport(id, dto);
+    const result = await this.parkingService.rateReport(id, dto, user.id);
     return result;
   }
 }

@@ -9,11 +9,34 @@ import SwiftUI
 
 struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var authViewModel: AuthViewModel
     let locationManager: LocationManager
+    @State private var showProfile = false
     
     var body: some View {
         NavigationStack {
             List {
+                Section {
+                    Button {
+                        showProfile = true
+                    } label: {
+                        HStack {
+                            Label("Profile", systemImage: "person.circle.fill")
+                            Spacer()
+                            if let user = authViewModel.currentUser {
+                                Text(user.displayName)
+                                    .foregroundColor(.secondary)
+                            }
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    .foregroundColor(.primary)
+                } header: {
+                    Text("Account")
+                }
+                
                 Section {
                     HStack {
                         Label("Location Access", systemImage: "location.fill")
@@ -62,6 +85,9 @@ struct SettingsView: View {
                         dismiss()
                     }
                 }
+            }
+            .sheet(isPresented: $showProfile) {
+                ProfileView(viewModel: authViewModel)
             }
         }
     }

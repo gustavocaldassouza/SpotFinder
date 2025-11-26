@@ -74,6 +74,11 @@ actor APIClient {
         urlRequest.httpMethod = "POST"
         urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
+        // Attach authentication token if available
+        if let token = await AuthService.shared.getAccessToken() {
+            urlRequest.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+        
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
         urlRequest.httpBody = try encoder.encode(request)
@@ -118,6 +123,11 @@ actor APIClient {
         var request = URLRequest(url: url)
         request.httpMethod = "PUT"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        // Attach authentication token if available
+        if let token = await AuthService.shared.getAccessToken() {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
         
         let rateRequest = RateReportRequest(isUpvote: isUpvote)
         let encoder = JSONEncoder()
