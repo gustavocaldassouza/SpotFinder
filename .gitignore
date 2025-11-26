@@ -74,3 +74,5 @@ node_modules/
 # Environment configuration (contains sensitive URLs)
 SpotFinder/Utilities/Environment.swift
 
+SpotFinder.docx
+~$otFinder.docx
