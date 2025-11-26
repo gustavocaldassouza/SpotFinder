@@ -12,7 +12,7 @@ enum AppConfiguration {
         #if DEBUG
         return "http://localhost:3000"
         #else
-        return Environment.apiBaseURL
+        return AppEnvironment.apiBaseURL
         #endif
     }
     
@@ -20,7 +20,7 @@ enum AppConfiguration {
         #if DEBUG
         return "ws://localhost:3000"
         #else
-        return Environment.wsBaseURL
+        return AppEnvironment.wsBaseURL
         #endif
     }
     

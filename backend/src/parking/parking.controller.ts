@@ -49,8 +49,10 @@ export class ParkingController {
   @Post()
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.CREATED)
-  @UsePipes(new ZodValidationPipe(createReportSchema))
-  async createReport(@Body() dto: CreateReportDto, @CurrentUser() user: User) {
+  async createReport(
+    @Body(new ZodValidationPipe(createReportSchema)) dto: CreateReportDto,
+    @CurrentUser() user: User,
+  ) {
     const result = await this.parkingService.createReport(dto, user.id);
     return result;
   }

@@ -9,7 +9,8 @@ import { ConfigService } from '@nestjs/config';
 import { Inject } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
 import * as bcrypt from 'bcrypt';
-import { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { DATABASE_TOKEN } from '../database/database.module';
+import type { Database } from '../database/client';
 import { users, User } from '../database/schema';
 import { SignUpDto, SignInDto, AuthResponseDto, UserDto } from './dto/auth.dto';
 import { JwtPayload } from './strategies/jwt.strategy';
@@ -17,8 +18,8 @@ import { JwtPayload } from './strategies/jwt.strategy';
 @Injectable()
 export class AuthService {
   constructor(
-    @Inject('DATABASE_CONNECTION')
-    private db: NodePgDatabase,
+    @Inject(DATABASE_TOKEN)
+    private db: Database,
     private jwtService: JwtService,
     private configService: ConfigService,
   ) {}

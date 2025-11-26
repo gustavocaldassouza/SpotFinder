@@ -9,7 +9,7 @@ import SwiftUI
 import CoreLocation
 
 struct ReportSheet: View {
-    @Environment(\.dismiss) private var dismiss
+    @Environment(\.dismiss) var dismiss
     let locationManager: LocationManager
     let viewModel: ParkingReportViewModel
     

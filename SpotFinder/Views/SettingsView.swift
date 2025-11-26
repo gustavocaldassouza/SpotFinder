@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @Environment(\.dismiss) private var dismiss
+    @Environment(\.dismiss) var dismiss
     @EnvironmentObject var authViewModel: AuthViewModel
     let locationManager: LocationManager
     @State private var showProfile = false

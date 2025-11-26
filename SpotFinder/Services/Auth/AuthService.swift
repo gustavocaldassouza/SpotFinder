@@ -41,7 +41,7 @@ actor AuthService {
             lastName: lastName
         )
         
-        let authResponse = try await performAuthRequest(endpoint: "/auth/signup", body: request)
+        let authResponse: AuthResponse = try await performAuthRequest(endpoint: "/auth/signup", body: request)
         try await saveTokens(authResponse)
         
         self.currentUser = authResponse.user
@@ -52,7 +52,7 @@ actor AuthService {
     
     func signIn(email: String, password: String) async throws -> User {
         let request = SignInRequest(email: email, password: password)
-        let authResponse = try await performAuthRequest(endpoint: "/auth/signin", body: request)
+        let authResponse: AuthResponse = try await performAuthRequest(endpoint: "/auth/signin", body: request)
         try await saveTokens(authResponse)
         
         self.currentUser = authResponse.user
@@ -64,7 +64,7 @@ actor AuthService {
     func signOut() async throws {
         // Call backend to invalidate refresh token
         do {
-            try await performAuthenticatedRequest(endpoint: "/auth/signout", method: "POST", body: Empty())
+            let _: Empty = try await performAuthenticatedRequest(endpoint: "/auth/signout", method: "POST", body: Empty())
         } catch {
             // Continue with local signout even if backend call fails
             print("Backend signout failed, continuing with local signout: \(error)")
@@ -82,7 +82,7 @@ actor AuthService {
         }
         
         let request = RefreshTokenRequest(refreshToken: refreshToken)
-        let authResponse = try await performAuthRequest(endpoint: "/auth/refresh", body: request)
+        let authResponse: AuthResponse = try await performAuthRequest(endpoint: "/auth/refresh", body: request)
         try await saveTokens(authResponse)
         
         self.currentUser = authResponse.user
@@ -92,7 +92,7 @@ actor AuthService {
     }
     
     func getProfile() async throws -> User {
-        let user: User = try await performAuthenticatedRequest(endpoint: "/auth/profile", method: "GET")
+        let user: User = try await performAuthenticatedRequest(endpoint: "/auth/profile", method: "GET", body: nil as Empty?)
         self.currentUser = user
         return user
     }
@@ -209,13 +209,6 @@ actor AuthService {
         decoder.dateDecodingStrategy = .iso8601
         
         return try decoder.decode(R.self, from: data)
-    }
-    
-    private func performAuthenticatedRequest(
-        endpoint: String,
-        method: String
-    ) async throws -> Void {
-        let _: Empty = try await performAuthenticatedRequest(endpoint: endpoint, method: method, body: nil as Empty?)
     }
 }
 

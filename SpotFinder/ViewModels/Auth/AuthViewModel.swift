@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import Combine
 
 @MainActor
 class AuthViewModel: ObservableObject {
@@ -101,6 +102,12 @@ class AuthViewModel: ObservableObject {
         case .decodingError:
             return "Failed to process response. Please try again."
         case .invalidURL, .invalidResponse:
+            return "An unexpected error occurred. Please try again."
+        case .noData:
+            return "No data received from server."
+        case .unauthorized:
+            return "Invalid email or password"
+        case .unknown:
             return "An unexpected error occurred. Please try again."
         }
     }
