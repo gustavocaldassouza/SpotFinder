@@ -84,9 +84,30 @@ export const reportRatings = pgTable(
   }),
 );
 
+export const favorites = pgTable(
+  'favorites',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    reportId: uuid('report_id')
+      .notNull()
+      .references(() => parkingReports.id, { onDelete: 'cascade' }),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdIdx: index('idx_favorite_user_id').on(table.userId),
+    reportIdIdx: index('idx_favorite_report_id').on(table.reportId),
+    uniqueFavorite: unique('unique_favorite').on(table.userId, table.reportId),
+  }),
+);
+
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type ParkingReport = typeof parkingReports.$inferSelect;
 export type NewParkingReport = typeof parkingReports.$inferInsert;
 export type ReportRating = typeof reportRatings.$inferSelect;
 export type NewReportRating = typeof reportRatings.$inferInsert;
+export type Favorite = typeof favorites.$inferSelect;
+export type NewFavorite = typeof favorites.$inferInsert;

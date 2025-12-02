@@ -38,6 +38,7 @@ struct MapScreen: View {
     @State private var customReportLocation: CLLocationCoordinate2D?
     @State private var showingSettings = false
     @State private var showingSpotDetail = false
+    @State private var showingFavorites = false
     @State private var cameraPosition: MapCameraPosition = .automatic
     @State private var selectedReport: ParkingReport?
     @State private var searchText = ""
@@ -135,6 +136,13 @@ struct MapScreen: View {
             .navigationTitle("SpotFinder")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        showingFavorites = true
+                    } label: {
+                        Image(systemName: "bookmark.fill")
+                    }
+                }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
                         showingSettings = true
@@ -162,6 +170,17 @@ struct MapScreen: View {
             .sheet(isPresented: $showingSettings) {
                 SettingsView(locationManager: locationManager)
             }
+            .sheet(isPresented: $showingFavorites) {
+                FavoritesView { report in
+                    // Navigate to the selected spot on the map
+                    cameraPosition = .camera(MapCamera(
+                        centerCoordinate: report.coordinate,
+                        distance: 500
+                    ))
+                    selectedReport = report
+                    showingSpotDetail = true
+                }
+            }
             .sheet(isPresented: $showingSpotDetail) {
                 if let report = selectedReport {
                     SpotDetailSheet(report: report, viewModel: viewModel)
@@ -170,6 +189,8 @@ struct MapScreen: View {
             .task {
                 await initializeApp()
                 setupSearchCompleter()
+                // Sync favorite IDs when app starts
+                await FavoritesManager.shared.syncFavoriteIds()
             }
             .onChange(of: locationManager.currentLocation) { _, newLocation in
                 if let location = newLocation {

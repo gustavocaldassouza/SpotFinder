@@ -17,12 +17,18 @@ struct SpotDetailSheet: View {
     @State private var showRatingAlert = false
     @State private var ratingAlertMessage = ""
     @State private var ratingSuccess = false
+    @State private var isFavorite = false
+    @State private var isTogglingFavorite = false
+    
+    private var favoritesManager: FavoritesManager {
+        FavoritesManager.shared
+    }
     
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-                    // Status Badge
+                    // Status Badge with Favorite Button
                     HStack {
                         Image(systemName: report.status == .available ? "checkmark.circle.fill" : "xmark.circle.fill")
                             .foregroundColor(report.status == .available ? .green : .red)
@@ -30,6 +36,23 @@ struct SpotDetailSheet: View {
                             .font(.headline)
                             .foregroundColor(report.status == .available ? .green : .red)
                         Spacer()
+                        
+                        // Favorite button
+                        Button {
+                            Task {
+                                await toggleFavorite()
+                            }
+                        } label: {
+                            if isTogglingFavorite {
+                                ProgressView()
+                                    .frame(width: 24, height: 24)
+                            } else {
+                                Image(systemName: isFavorite ? "bookmark.fill" : "bookmark")
+                                    .font(.title2)
+                                    .foregroundColor(isFavorite ? .yellow : .gray)
+                            }
+                        }
+                        .disabled(isTogglingFavorite)
                     }
                     .padding()
                     .background(Color(.systemGray6))
@@ -179,7 +202,18 @@ struct SpotDetailSheet: View {
             } message: {
                 Text(ratingAlertMessage)
             }
+            .onAppear {
+                isFavorite = favoritesManager.isFavorite(report.id)
+            }
         }
+    }
+    
+    private func toggleFavorite() async {
+        isTogglingFavorite = true
+        defer { isTogglingFavorite = false }
+        
+        await favoritesManager.toggleFavorite(report)
+        isFavorite = favoritesManager.isFavorite(report.id)
     }
     
     private func markAsNotAvailable() async {
