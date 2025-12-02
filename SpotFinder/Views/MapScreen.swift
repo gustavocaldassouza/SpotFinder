@@ -35,6 +35,7 @@ struct MapScreen: View {
     @State private var viewModel = ParkingReportViewModel()
     @State private var locationManager = LocationManager()
     @State private var showingReportSheet = false
+    @State private var customReportLocation: CLLocationCoordinate2D?
     @State private var showingSettings = false
     @State private var showingSpotDetail = false
     @State private var cameraPosition: MapCameraPosition = .automatic
@@ -154,7 +155,8 @@ struct MapScreen: View {
             .sheet(isPresented: $showingReportSheet) {
                 ReportSheet(
                     locationManager: locationManager,
-                    viewModel: viewModel
+                    viewModel: viewModel,
+                    customLocation: customReportLocation
                 )
             }
             .sheet(isPresented: $showingSettings) {
@@ -286,6 +288,12 @@ struct MapScreen: View {
                 }
             }
         }
+        .onLongPressGesture(minimumDuration: 0.5) {
+            // This will be handled by the MapReader if needed
+        }
+        .onTapGesture { location in
+            // Future: Could convert tap location to coordinates for selection
+        }
         .mapControls {
             MapUserLocationButton()
             MapCompass()
@@ -318,6 +326,7 @@ struct MapScreen: View {
     private var actionButtons: some View {
         HStack(spacing: 16) {
             Button {
+                customReportLocation = nil
                 showingReportSheet = true
             } label: {
                 Label("Report Spot", systemImage: "plus.circle.fill")
@@ -326,7 +335,21 @@ struct MapScreen: View {
                     .frame(height: 50)
             }
             .buttonStyle(.borderedProminent)
-            .disabled(!locationManager.isAuthorized)
+            
+            Button {
+                if let currentLocation = locationManager.currentLocation {
+                    customReportLocation = currentLocation.coordinate
+                } else if let camera = cameraPosition.camera {
+                    customReportLocation = camera.centerCoordinate
+                }
+                showingReportSheet = true
+            } label: {
+                Image(systemName: "mappin.and.ellipse")
+                    .font(.headline)
+                    .frame(height: 50)
+                    .frame(width: 50)
+            }
+            .buttonStyle(.bordered)
         }
     }
     
