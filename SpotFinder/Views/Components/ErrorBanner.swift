@@ -16,7 +16,7 @@ struct ErrorBanner: View {
             Image(systemName: "exclamationmark.triangle.fill")
                 .foregroundStyle(.red)
             
-            Text(error.errorDescription ?? "An error occurred")
+            Text(error.errorDescription ?? L10n.Error.defaultMessage)
                 .font(.subheadline)
                 .lineLimit(2)
             

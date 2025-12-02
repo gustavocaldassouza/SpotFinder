@@ -20,21 +20,21 @@ enum APIError: Error, LocalizedError, Sendable {
     var errorDescription: String? {
         switch self {
         case .invalidURL:
-            return "Invalid URL"
+            return L10n.APIError.invalidURL
         case .networkError(let error):
-            return "Network error: \(error.localizedDescription)"
+            return L10n.APIError.networkError(error.localizedDescription)
         case .invalidResponse:
-            return "Invalid response from server"
+            return L10n.APIError.invalidResponse
         case .decodingError(let error):
-            return "Failed to decode response: \(error.localizedDescription)"
+            return L10n.APIError.decodingError(error.localizedDescription)
         case .serverError(let code, let message):
-            return "Server error (\(code)): \(message ?? "Unknown error")"
+            return L10n.APIError.serverError(code, message ?? L10n.APIError.unknown)
         case .noData:
-            return "No data received"
+            return L10n.APIError.noData
         case .unauthorized:
-            return "Unauthorized access"
+            return L10n.APIError.unauthorized
         case .unknown:
-            return "An unknown error occurred"
+            return L10n.APIError.unknown
         }
     }
 }

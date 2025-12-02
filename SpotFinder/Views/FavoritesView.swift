@@ -20,7 +20,7 @@ struct FavoritesView: View {
         NavigationStack {
             Group {
                 if favoritesManager.isLoading {
-                    ProgressView("Loading favorites...")
+                    ProgressView(L10n.Favorites.loading)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else if favoritesManager.favorites.isEmpty {
                     emptyState
@@ -28,11 +28,11 @@ struct FavoritesView: View {
                     favoritesList
                 }
             }
-            .navigationTitle("Saved Spots")
+            .navigationTitle(L10n.Favorites.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") {
+                    Button(L10n.Common.done) {
                         dismiss()
                     }
                 }
@@ -57,11 +57,11 @@ struct FavoritesView: View {
                 .font(.system(size: 60))
                 .foregroundColor(.secondary)
             
-            Text("No Saved Spots")
+            Text(L10n.Favorites.emptyTitle)
                 .font(.title2)
                 .fontWeight(.semibold)
             
-            Text("Bookmark parking spots to quickly access them later.")
+            Text(L10n.Favorites.emptyMessage)
                 .font(.body)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
@@ -87,7 +87,7 @@ struct FavoritesView: View {
                             await favoritesManager.removeFavorite(report.id)
                         }
                     } label: {
-                        Label("Remove", systemImage: "bookmark.slash")
+                        Label(L10n.Common.remove, systemImage: "bookmark.slash")
                     }
                 }
             }
@@ -117,7 +117,7 @@ struct FavoriteRow: View {
                         .font(.headline)
                         .lineLimit(1)
                 } else {
-                    Text(report.status == .available ? "Available Spot" : "Taken Spot")
+                    Text(report.status == .available ? L10n.Favorites.availableSpot : L10n.Favorites.takenSpot)
                         .font(.headline)
                 }
                 
@@ -166,7 +166,7 @@ struct FavoriteRow: View {
             if report.isExpired {
                 HStack {
                     Spacer()
-                    Text("Expired")
+                    Text(L10n.Favorites.expired)
                         .font(.caption)
                         .foregroundColor(.white)
                         .padding(.horizontal, 8)

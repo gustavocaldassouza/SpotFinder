@@ -14,23 +14,23 @@ struct ProfileView: View {
         NavigationStack {
             List {
                 if let user = viewModel.currentUser {
-                    Section("Profile") {
+                    Section(L10n.Profile.title) {
                         HStack {
-                            Text("Name")
+                            Text(L10n.Profile.name)
                             Spacer()
                             Text(user.displayName)
                                 .foregroundColor(.secondary)
                         }
                         
                         HStack {
-                            Text("Email")
+                            Text(L10n.Profile.email)
                             Spacer()
                             Text(user.email)
                                 .foregroundColor(.secondary)
                         }
                         
                         HStack {
-                            Text("Member Since")
+                            Text(L10n.Profile.memberSince)
                             Spacer()
                             Text(user.createdAt, style: .date)
                                 .foregroundColor(.secondary)
@@ -49,7 +49,7 @@ struct ProfileView: View {
                             if viewModel.isLoading {
                                 ProgressView()
                             } else {
-                                Text("Sign Out")
+                                Text(L10n.Profile.signOut)
                             }
                             Spacer()
                         }
@@ -57,7 +57,7 @@ struct ProfileView: View {
                     .disabled(viewModel.isLoading)
                 }
             }
-            .navigationTitle("Profile")
+            .navigationTitle(L10n.Profile.title)
         }
     }
 }

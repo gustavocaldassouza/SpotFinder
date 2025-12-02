@@ -1,0 +1,153 @@
+/* 
+  Localizable.strings
+  SpotFinder
+
+  English localization
+*/
+
+// MARK: - Common
+"common.done" = "Done";
+"common.cancel" = "Cancel";
+"common.ok" = "OK";
+"common.error" = "Error";
+"common.submit" = "Submit";
+"common.loading" = "Loading...";
+"common.remove" = "Remove";
+
+// MARK: - App
+"app.name" = "SpotFinder";
+"app.tagline" = "Find parking spots near you";
+
+// MARK: - Map Screen
+"map.searchPlaceholder" = "Search address...";
+"map.reportSpot" = "Report Spot";
+"map.spotAvailable" = "Spot Available";
+"map.spotTaken" = "Spot Taken";
+"map.addressNotFound" = "Address not found";
+"map.searchFailed" = "Failed to search address";
+"map.locationFailed" = "Failed to find location";
+
+// MARK: - Report Sheet
+"report.title" = "Report Parking Spot";
+"report.status" = "Status";
+"report.statusHeader" = "Report Type";
+"report.spotAvailable" = "Spot Available";
+"report.spotTaken" = "Spot Taken";
+"report.locationHeader" = "Location";
+"report.locationSource" = "Location Source";
+"report.currentLocation" = "Current Location";
+"report.mapLocation" = "Map Location";
+"report.searchAddress" = "Search Address";
+"report.gettingLocation" = "Getting location...";
+"report.usingCurrentLocation" = "Using your current GPS location";
+"report.usingMapLocation" = "Using selected map location";
+"report.usingSearchedLocation" = "Using searched address location";
+"report.searchForAddress" = "Search for an address to report a spot";
+"report.detailsHeader" = "Details";
+"report.descriptionPlaceholder" = "Description (optional)";
+"report.descriptionFooter" = "Add any helpful details about the parking spot";
+"report.addressPlaceholder" = "Search for an address...";
+"report.address" = "Address";
+"report.latitude" = "Latitude";
+"report.longitude" = "Longitude";
+"report.unableToGetLocation" = "Unable to get location";
+"report.failedToSubmit" = "Failed to submit report";
+"report.addressNotFound" = "Could not find location for this address";
+"report.addressSearchFailed" = "Failed to search for address";
+
+// MARK: - Settings
+"settings.title" = "Settings";
+"settings.accountHeader" = "Account";
+"settings.profile" = "Profile";
+"settings.permissionsHeader" = "Permissions";
+"settings.locationAccess" = "Location Access";
+"settings.openSettings" = "Open Settings";
+"settings.locationFooter" = "Location access is required to find nearby parking spots and report new ones";
+"settings.aboutHeader" = "About";
+"settings.version" = "Version";
+"settings.build" = "Build";
+"settings.resourcesHeader" = "Resources";
+"settings.github" = "GitHub Repository";
+"settings.support" = "Support";
+"settings.languageHeader" = "Language";
+"settings.language" = "Language";
+"settings.languageFooter" = "Change the app language. The app will refresh to apply the change.";
+"settings.restartRequired" = "Restart Required";
+"settings.restartMessage" = "Please restart the app for the language change to take full effect.";
+
+// MARK: - Location Permission Status
+"permission.notDetermined" = "Not Determined";
+"permission.restricted" = "Restricted";
+"permission.denied" = "Denied";
+"permission.always" = "Always";
+"permission.whileUsing" = "While Using";
+
+// MARK: - Favorites
+"favorites.title" = "Saved Spots";
+"favorites.loading" = "Loading favorites...";
+"favorites.empty.title" = "No Saved Spots";
+"favorites.empty.message" = "Bookmark parking spots to quickly access them later.";
+"favorites.expired" = "Expired";
+"favorites.availableSpot" = "Available Spot";
+"favorites.takenSpot" = "Taken Spot";
+
+// MARK: - Spot Detail
+"spotDetail.title" = "Spot Details";
+"spotDetail.available" = "Available";
+"spotDetail.taken" = "Taken";
+"spotDetail.reported" = "Reported";
+"spotDetail.expires" = "Expires";
+"spotDetail.description" = "Description";
+"spotDetail.accuracy" = "Accuracy";
+"spotDetail.accuracyRatings" = "based on %d rating(s)";
+"spotDetail.oneRating" = "based on 1 rating";
+"spotDetail.multipleRatings" = "based on %d ratings";
+"spotDetail.location" = "Location";
+"spotDetail.markNotAvailable" = "Mark as Not Available";
+"spotDetail.accurate" = "Accurate";
+"spotDetail.inaccurate" = "Inaccurate";
+"spotDetail.thanks" = "Thanks!";
+"spotDetail.alreadyRated" = "Already Rated";
+"spotDetail.alreadyRatedMessage" = "You've already rated this spot. Each user can only rate a report once.";
+"spotDetail.ratingError" = "Something went wrong. Please try again.";
+"spotDetail.ratingSuccess" = "Your feedback helps the community find parking spots more easily!";
+"spotDetail.updatedNotAvailable" = "Updated: Spot no longer available";
+
+// MARK: - Auth - Sign In
+"signIn.title" = "SpotFinder";
+"signIn.email" = "Email";
+"signIn.password" = "Password";
+"signIn.button" = "Sign In";
+"signIn.noAccount" = "Don't have an account?";
+"signIn.signUp" = "Sign Up";
+
+// MARK: - Auth - Sign Up
+"signUp.title" = "Create Account";
+"signUp.subtitle" = "Sign up to report and find parking spots";
+"signUp.firstName" = "First Name (Optional)";
+"signUp.lastName" = "Last Name (Optional)";
+"signUp.email" = "Email";
+"signUp.password" = "Password";
+"signUp.confirmPassword" = "Confirm Password";
+"signUp.button" = "Sign Up";
+"signUp.passwordMismatch" = "Passwords do not match";
+
+// MARK: - Auth - Profile
+"profile.title" = "Profile";
+"profile.name" = "Name";
+"profile.email" = "Email";
+"profile.memberSince" = "Member Since";
+"profile.signOut" = "Sign Out";
+
+// MARK: - Error Banner
+"error.defaultMessage" = "An error occurred";
+
+// MARK: - API Errors
+"apiError.invalidURL" = "Invalid URL";
+"apiError.networkError" = "Network error: %@";
+"apiError.invalidResponse" = "Invalid response from server";
+"apiError.decodingError" = "Failed to decode response: %@";
+"apiError.serverError" = "Server error (%d): %@";
+"apiError.noData" = "No data received";
+"apiError.unauthorized" = "Unauthorized access";
+"apiError.unknown" = "An unknown error occurred";

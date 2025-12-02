@@ -71,9 +71,9 @@ struct ReportCard: View {
     private var statusText: String {
         switch report.status {
         case .available:
-            return "Spot Available"
+            return L10n.Map.spotAvailable
         case .taken:
-            return "Spot Taken"
+            return L10n.Map.spotTaken
         }
     }
     

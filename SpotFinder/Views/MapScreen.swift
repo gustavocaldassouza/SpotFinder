@@ -54,7 +54,7 @@ struct MapScreen: View {
                     HStack {
                         Image(systemName: "magnifyingglass")
                             .foregroundColor(.gray)
-                        TextField("Search address...", text: $searchText)
+                        TextField(L10n.Map.searchPlaceholder, text: $searchText)
                             .autocapitalization(.words)
                             .disableAutocorrection(true)
                             .focused($searchFieldIsFocused)
@@ -133,7 +133,7 @@ struct MapScreen: View {
                 }
                 .padding()
             }
-            .navigationTitle("SpotFinder")
+            .navigationTitle(L10n.App.name)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -221,10 +221,10 @@ struct MapScreen: View {
                 )
                 addressSuggestions = []
             } else {
-                setCustomError("Address not found")
+                setCustomError(L10n.Map.addressNotFound)
             }
         } catch {
-            setCustomError("Failed to search address")
+            setCustomError(L10n.Map.searchFailed)
         }
     }
 
@@ -280,7 +280,7 @@ struct MapScreen: View {
                 addressSuggestions = []
             }
         } catch {
-            setCustomError("Failed to find location")
+            setCustomError(L10n.Map.locationFailed)
         }
     }
         
@@ -350,7 +350,7 @@ struct MapScreen: View {
                 customReportLocation = nil
                 showingReportSheet = true
             } label: {
-                Label("Report Spot", systemImage: "plus.circle.fill")
+                Label(L10n.Map.reportSpot, systemImage: "plus.circle.fill")
                     .font(.headline)
                     .frame(maxWidth: .infinity)
                     .frame(height: 50)
@@ -401,7 +401,7 @@ struct MapScreen: View {
         if let description = report.description, !description.isEmpty {
             return description
         }
-        return report.status == .available ? "Spot Available" : "Spot Taken"
+        return report.status == .available ? L10n.Map.spotAvailable : L10n.Map.spotTaken
     }
 }
 

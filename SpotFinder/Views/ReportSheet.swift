@@ -18,10 +18,18 @@ extension Binding where Value == Bool {
     }
 }
 
-enum LocationSource: String, CaseIterable {
-    case currentLocation = "Current Location"
-    case mapLocation = "Map Location"
-    case searchAddress = "Search Address"
+enum LocationSource: CaseIterable {
+    case currentLocation
+    case mapLocation
+    case searchAddress
+    
+    var localizedName: String {
+        switch self {
+        case .currentLocation: return L10n.Report.currentLocation
+        case .mapLocation: return L10n.Report.mapLocation
+        case .searchAddress: return L10n.Report.searchAddress
+        }
+    }
 }
 
 struct ReportSheet: View {
@@ -50,24 +58,24 @@ struct ReportSheet: View {
         NavigationStack {
             Form {
                 Section {
-                    Picker("Status", selection: $reportStatus) {
-                        Label("Spot Available", systemImage: "checkmark.circle.fill")
+                    Picker(L10n.Report.status, selection: $reportStatus) {
+                        Label(L10n.Report.spotAvailable, systemImage: "checkmark.circle.fill")
                             .tag(ReportStatus.available)
-                        Label("Spot Taken", systemImage: "xmark.circle.fill")
+                        Label(L10n.Report.spotTaken, systemImage: "xmark.circle.fill")
                             .tag(ReportStatus.taken)
                     }
                     .pickerStyle(.segmented)
                 } header: {
-                    Text("Report Type")
+                    Text(L10n.Report.statusHeader)
                 }
                 
                 Section {
-                    Picker("Location Source", selection: $locationSource) {
-                        Text("Current Location").tag(LocationSource.currentLocation)
+                    Picker(L10n.Report.locationSource, selection: $locationSource) {
+                        Text(L10n.Report.currentLocation).tag(LocationSource.currentLocation)
                         if customLocation != nil {
-                            Text("Map Location").tag(LocationSource.mapLocation)
+                            Text(L10n.Report.mapLocation).tag(LocationSource.mapLocation)
                         }
-                        Text("Search Address").tag(LocationSource.searchAddress)
+                        Text(L10n.Report.searchAddress).tag(LocationSource.searchAddress)
                     }
                     .pickerStyle(.menu)
                     .onChange(of: locationSource) { _, newValue in
@@ -85,42 +93,42 @@ struct ReportSheet: View {
                     
                     if let location = selectedLocation {
                         if let address = searchedAddress, locationSource == .searchAddress {
-                            LabeledContent("Address", value: address)
+                            LabeledContent(L10n.Report.address, value: address)
                                 .lineLimit(2)
                         }
-                        LabeledContent("Latitude", value: String(format: "%.6f", location.latitude))
-                        LabeledContent("Longitude", value: String(format: "%.6f", location.longitude))
+                        LabeledContent(L10n.Report.latitude, value: String(format: "%.6f", location.latitude))
+                        LabeledContent(L10n.Report.longitude, value: String(format: "%.6f", location.longitude))
                     } else if locationSource != .searchAddress {
-                        Label("Getting location...", systemImage: "location.fill")
+                        Label(L10n.Report.gettingLocation, systemImage: "location.fill")
                             .foregroundStyle(.secondary)
                     }
                 } header: {
-                    Text("Location")
+                    Text(L10n.Report.locationHeader)
                 } footer: {
                     locationFooterText
                 }
                 
                 Section {
-                    TextField("Description (optional)", text: $description, axis: .vertical)
+                    TextField(L10n.Report.descriptionPlaceholder, text: $description, axis: .vertical)
                         .textInputAutocapitalization(.sentences)
                         .lineLimit(3...6)
                 } header: {
-                    Text("Details")
+                    Text(L10n.Report.detailsHeader)
                 } footer: {
-                    Text("Add any helpful details about the parking spot")
+                    Text(L10n.Report.descriptionFooter)
                 }
             }
-            .navigationTitle("Report Parking Spot")
+            .navigationTitle(L10n.Report.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
+                    Button(L10n.Common.cancel) {
                         dismiss()
                     }
                 }
                 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Submit") {
+                    Button(L10n.Common.submit) {
                         Task {
                             await submitReport()
                         }
@@ -136,8 +144,8 @@ struct ReportSheet: View {
                         .background(.ultraThinMaterial)
                 }
             }
-            .alert("Error", isPresented: $showError) {
-                Button("OK", role: .cancel) { }
+            .alert(L10n.Common.error, isPresented: $showError) {
+                Button(L10n.Common.ok, role: .cancel) { }
             } message: {
                 Text(errorMessage)
             }
@@ -158,7 +166,7 @@ struct ReportSheet: View {
             HStack {
                 Image(systemName: "magnifyingglass")
                     .foregroundColor(.gray)
-                TextField("Search for an address...", text: $addressSearchText)
+                TextField(L10n.Report.addressPlaceholder, text: $addressSearchText)
                     .textInputAutocapitalization(.words)
                     .disableAutocorrection(true)
                     .focused($isAddressFieldFocused)
@@ -213,14 +221,14 @@ struct ReportSheet: View {
     private var locationFooterText: some View {
         switch locationSource {
         case .currentLocation:
-            Text("Using your current GPS location")
+            Text(L10n.Report.usingCurrentLocation)
         case .mapLocation:
-            Text("Using selected map location")
+            Text(L10n.Report.usingMapLocation)
         case .searchAddress:
             if searchedLocation != nil {
-                Text("Using searched address location")
+                Text(L10n.Report.usingSearchedLocation)
             } else {
-                Text("Search for an address to report a spot")
+                Text(L10n.Report.searchForAddress)
             }
         }
     }
@@ -281,11 +289,11 @@ struct ReportSheet: View {
                 addressSearchText = completion.title
                 addressSuggestions = []
             } else {
-                errorMessage = "Could not find location for this address"
+                errorMessage = L10n.Report.addressNotFound
                 showError = true
             }
         } catch {
-            errorMessage = "Failed to search for address"
+            errorMessage = L10n.Report.addressSearchFailed
             showError = true
         }
     }
@@ -320,7 +328,7 @@ struct ReportSheet: View {
     
     private func submitReport() async {
         guard let location = selectedLocation else {
-            errorMessage = "Unable to get location"
+            errorMessage = L10n.Report.unableToGetLocation
             showError = true
             return
         }
@@ -339,7 +347,7 @@ struct ReportSheet: View {
         if success {
             dismiss()
         } else {
-            errorMessage = viewModel.error?.errorDescription ?? "Failed to submit report"
+            errorMessage = viewModel.error?.errorDescription ?? L10n.Report.failedToSubmit
             showError = true
         }
     }
