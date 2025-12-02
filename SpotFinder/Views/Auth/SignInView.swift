@@ -22,11 +22,11 @@ struct SignInView: View {
                         .font(.system(size: 60))
                         .foregroundColor(.blue)
                     
-                    Text("SpotFinder")
+                    Text(L10n.App.name)
                         .font(.largeTitle)
                         .fontWeight(.bold)
                     
-                    Text("Find parking spots near you")
+                    Text(L10n.App.tagline)
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                 }
@@ -35,13 +35,13 @@ struct SignInView: View {
                 
                 // Sign In Form
                 VStack(spacing: 16) {
-                    TextField("Email", text: $email)
+                    TextField(L10n.SignIn.email, text: $email)
                         .textFieldStyle(.roundedBorder)
                         .textContentType(.emailAddress)
                         .autocapitalization(.none)
                         .keyboardType(.emailAddress)
                     
-                    SecureField("Password", text: $password)
+                    SecureField(L10n.SignIn.password, text: $password)
                         .textFieldStyle(.roundedBorder)
                         .textContentType(.password)
                     
@@ -63,7 +63,7 @@ struct SignInView: View {
                                 .tint(.white)
                                 .frame(maxWidth: .infinity)
                         } else {
-                            Text("Sign In")
+                            Text(L10n.SignIn.button)
                                 .fontWeight(.semibold)
                                 .frame(maxWidth: .infinity)
                         }
@@ -80,9 +80,9 @@ struct SignInView: View {
                     showSignUp = true
                 } label: {
                     HStack(spacing: 4) {
-                        Text("Don't have an account?")
+                        Text(L10n.SignIn.noAccount)
                             .foregroundColor(.secondary)
-                        Text("Sign Up")
+                        Text(L10n.SignIn.signUp)
                             .fontWeight(.semibold)
                     }
                 }

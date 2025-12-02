@@ -12,6 +12,8 @@ struct SettingsView: View {
     @EnvironmentObject var authViewModel: AuthViewModel
     let locationManager: LocationManager
     @State private var showProfile = false
+    @State private var languageManager = LanguageManager.shared
+    @State private var showRestartAlert = false
     
     var body: some View {
         NavigationStack {
@@ -21,7 +23,7 @@ struct SettingsView: View {
                         showProfile = true
                     } label: {
                         HStack {
-                            Label("Profile", systemImage: "person.circle.fill")
+                            Label(L10n.Settings.profile, systemImage: "person.circle.fill")
                             Spacer()
                             if let user = authViewModel.currentUser {
                                 Text(user.displayName)
@@ -34,12 +36,36 @@ struct SettingsView: View {
                     }
                     .foregroundColor(.primary)
                 } header: {
-                    Text("Account")
+                    Text(L10n.Settings.accountHeader)
+                }
+                
+                Section {
+                    Picker(selection: Binding(
+                        get: { languageManager.currentLanguage },
+                        set: { newLanguage in
+                            languageManager.currentLanguage = newLanguage
+                            showRestartAlert = true
+                        }
+                    )) {
+                        ForEach(AppLanguage.allCases) { language in
+                            HStack {
+                                Text(language.flag)
+                                Text(language.displayName)
+                            }
+                            .tag(language)
+                        }
+                    } label: {
+                        Label(L10n.Settings.language, systemImage: "globe")
+                    }
+                } header: {
+                    Text(L10n.Settings.languageHeader)
+                } footer: {
+                    Text(L10n.Settings.languageFooter)
                 }
                 
                 Section {
                     HStack {
-                        Label("Location Access", systemImage: "location.fill")
+                        Label(L10n.Settings.locationAccess, systemImage: "location.fill")
                         Spacer()
                         Text(permissionStatusText)
                             .foregroundStyle(permissionStatusColor)
@@ -49,39 +75,39 @@ struct SettingsView: View {
                         Button {
                             openSettings()
                         } label: {
-                            Label("Open Settings", systemImage: "gear")
+                            Label(L10n.Settings.openSettings, systemImage: "gear")
                         }
                     }
                 } header: {
-                    Text("Permissions")
+                    Text(L10n.Settings.permissionsHeader)
                 } footer: {
-                    Text("Location access is required to find nearby parking spots and report new ones")
+                    Text(L10n.Settings.locationFooter)
                 }
                 
                 Section {
-                    LabeledContent("Version", value: "1.0.0")
-                    LabeledContent("Build", value: "1")
+                    LabeledContent(L10n.Settings.version, value: "1.0.0")
+                    LabeledContent(L10n.Settings.build, value: "1")
                 } header: {
-                    Text("About")
+                    Text(L10n.Settings.aboutHeader)
                 }
                 
                 Section {
                     Link(destination: URL(string: "https://github.com")!) {
-                        Label("GitHub Repository", systemImage: "link")
+                        Label(L10n.Settings.github, systemImage: "link")
                     }
                     
                     Link(destination: URL(string: "https://support.apple.com")!) {
-                        Label("Support", systemImage: "questionmark.circle")
+                        Label(L10n.Settings.support, systemImage: "questionmark.circle")
                     }
                 } header: {
-                    Text("Resources")
+                    Text(L10n.Settings.resourcesHeader)
                 }
             }
-            .navigationTitle("Settings")
+            .navigationTitle(L10n.Settings.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") {
+                    Button(L10n.Common.done) {
                         dismiss()
                     }
                 }
@@ -89,21 +115,26 @@ struct SettingsView: View {
             .sheet(isPresented: $showProfile) {
                 ProfileView(viewModel: authViewModel)
             }
+            .alert(L10n.Settings.restartRequired, isPresented: $showRestartAlert) {
+                Button(L10n.Common.ok) { }
+            } message: {
+                Text(L10n.Settings.restartMessage)
+            }
         }
     }
     
     private var permissionStatusText: String {
         switch locationManager.permissionStatus {
         case .notDetermined:
-            return "Not Determined"
+            return L10n.Permission.notDetermined
         case .restricted:
-            return "Restricted"
+            return L10n.Permission.restricted
         case .denied:
-            return "Denied"
+            return L10n.Permission.denied
         case .authorizedAlways:
-            return "Always"
+            return L10n.Permission.always
         case .authorizedWhenInUse:
-            return "While Using"
+            return L10n.Permission.whileUsing
         }
     }
     

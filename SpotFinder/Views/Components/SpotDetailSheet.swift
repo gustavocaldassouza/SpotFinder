@@ -32,7 +32,7 @@ struct SpotDetailSheet: View {
                     HStack {
                         Image(systemName: report.status == .available ? "checkmark.circle.fill" : "xmark.circle.fill")
                             .foregroundColor(report.status == .available ? .green : .red)
-                        Text(report.status == .available ? "Available" : "Taken")
+                        Text(report.status == .available ? L10n.SpotDetail.available : L10n.SpotDetail.taken)
                             .font(.headline)
                             .foregroundColor(report.status == .available ? .green : .red)
                         Spacer()
@@ -60,14 +60,14 @@ struct SpotDetailSheet: View {
                     
                     // Time Information
                     VStack(alignment: .leading, spacing: 12) {
-                        Label("Reported", systemImage: "clock")
+                        Label(L10n.SpotDetail.reported, systemImage: "clock")
                             .font(.headline)
                         Text(formatDate(report.createdAt))
                             .font(.body)
                             .foregroundColor(.secondary)
                         
                         Divider()
-                        Label("Expires", systemImage: "hourglass")
+                        Label(L10n.SpotDetail.expires, systemImage: "hourglass")
                             .font(.headline)
                         Text(formatDate(report.expiresAt))
                             .font(.body)
@@ -80,7 +80,7 @@ struct SpotDetailSheet: View {
                     // Description
                     if let description = report.description, !description.isEmpty {
                         VStack(alignment: .leading, spacing: 8) {
-                            Label("Description", systemImage: "text.alignleft")
+                            Label(L10n.SpotDetail.description, systemImage: "text.alignleft")
                                 .font(.headline)
                             Text(description)
                                 .font(.body)
@@ -93,13 +93,13 @@ struct SpotDetailSheet: View {
                     
                     // Accuracy Rating
                     VStack(alignment: .leading, spacing: 8) {
-                        Label("Accuracy", systemImage: "star.fill")
+                        Label(L10n.SpotDetail.accuracy, systemImage: "star.fill")
                             .font(.headline)
                         HStack {
                             Text("\(Int(report.accuracyRating * 100))%")
                                 .font(.title2)
                                 .bold()
-                            Text("based on \(report.totalRatings) rating\(report.totalRatings == 1 ? "" : "s")")
+                            Text(L10n.SpotDetail.ratingsCount(report.totalRatings))
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
@@ -110,7 +110,7 @@ struct SpotDetailSheet: View {
                     
                     // Location
                     VStack(alignment: .leading, spacing: 8) {
-                        Label("Location", systemImage: "mappin.circle")
+                        Label(L10n.SpotDetail.location, systemImage: "mappin.circle")
                             .font(.headline)
                         Text("Lat: \(report.latitude, specifier: "%.4f")")
                             .font(.caption)
@@ -135,7 +135,7 @@ struct SpotDetailSheet: View {
                                     ProgressView()
                                         .frame(maxWidth: .infinity)
                                 } else {
-                                    Label("Mark as Not Available", systemImage: "xmark.circle")
+                                    Label(L10n.SpotDetail.markNotAvailable, systemImage: "xmark.circle")
                                         .frame(maxWidth: .infinity)
                                 }
                             }
@@ -155,7 +155,7 @@ struct SpotDetailSheet: View {
                                     ProgressView()
                                         .frame(maxWidth: .infinity)
                                 } else {
-                                    Label("Accurate", systemImage: "hand.thumbsup")
+                                    Label(L10n.SpotDetail.accurate, systemImage: "hand.thumbsup")
                                         .frame(maxWidth: .infinity)
                                 }
                             }
@@ -172,7 +172,7 @@ struct SpotDetailSheet: View {
                                     ProgressView()
                                         .frame(maxWidth: .infinity)
                                 } else {
-                                    Label("Inaccurate", systemImage: "hand.thumbsdown")
+                                    Label(L10n.SpotDetail.inaccurate, systemImage: "hand.thumbsdown")
                                         .frame(maxWidth: .infinity)
                                 }
                             }
@@ -184,17 +184,17 @@ struct SpotDetailSheet: View {
                 }
                 .padding()
             }
-            .navigationTitle("Spot Details")
+            .navigationTitle(L10n.SpotDetail.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") {
+                    Button(L10n.Common.done) {
                         dismiss()
                     }
                 }
             }
-            .alert(ratingSuccess ? "Thanks!" : "Already Rated", isPresented: $showRatingAlert) {
-                Button("OK") {
+            .alert(ratingSuccess ? L10n.SpotDetail.thanks : L10n.SpotDetail.alreadyRated, isPresented: $showRatingAlert) {
+                Button(L10n.Common.ok) {
                     if ratingSuccess {
                         dismiss()
                     }
@@ -224,7 +224,7 @@ struct SpotDetailSheet: View {
         let success = await viewModel.createReport(
             latitude: report.latitude,
             longitude: report.longitude,
-            description: "Updated: Spot no longer available",
+            description: L10n.SpotDetail.updatedNotAvailable,
             status: .taken
         )
         
@@ -248,7 +248,7 @@ struct SpotDetailSheet: View {
             if case .serverError(let code, let message) = error {
                 if code == 400 && (message?.localizedCaseInsensitiveContains("already rated") == true) {
                     ratingSuccess = false
-                    ratingAlertMessage = "You've already rated this spot. Each user can only rate a report once."
+                    ratingAlertMessage = L10n.SpotDetail.alreadyRatedMessage
                     showRatingAlert = true
                     viewModel.clearError()
                     return
@@ -256,7 +256,7 @@ struct SpotDetailSheet: View {
             }
             // Other error
             ratingSuccess = false
-            ratingAlertMessage = "Something went wrong. Please try again."
+            ratingAlertMessage = L10n.SpotDetail.ratingError
             showRatingAlert = true
             viewModel.clearError()
             return
@@ -264,7 +264,7 @@ struct SpotDetailSheet: View {
         
         // Success
         ratingSuccess = true
-        ratingAlertMessage = "Your feedback helps the community find parking spots more easily!"
+        ratingAlertMessage = L10n.SpotDetail.ratingSuccess
         showRatingAlert = true
     }
     

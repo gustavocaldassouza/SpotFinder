@@ -1,0 +1,153 @@
+/* 
+  Localizable.strings
+  SpotFinder
+
+  French localization
+*/
+
+// MARK: - Common
+"common.done" = "Terminé";
+"common.cancel" = "Annuler";
+"common.ok" = "OK";
+"common.error" = "Erreur";
+"common.submit" = "Soumettre";
+"common.loading" = "Chargement...";
+"common.remove" = "Supprimer";
+
+// MARK: - App
+"app.name" = "SpotFinder";
+"app.tagline" = "Trouvez des places de stationnement près de vous";
+
+// MARK: - Map Screen
+"map.searchPlaceholder" = "Rechercher une adresse...";
+"map.reportSpot" = "Signaler une place";
+"map.spotAvailable" = "Place disponible";
+"map.spotTaken" = "Place occupée";
+"map.addressNotFound" = "Adresse non trouvée";
+"map.searchFailed" = "Échec de la recherche d'adresse";
+"map.locationFailed" = "Échec de la localisation";
+
+// MARK: - Report Sheet
+"report.title" = "Signaler une place de stationnement";
+"report.status" = "Statut";
+"report.statusHeader" = "Type de signalement";
+"report.spotAvailable" = "Place disponible";
+"report.spotTaken" = "Place occupée";
+"report.locationHeader" = "Emplacement";
+"report.locationSource" = "Source de localisation";
+"report.currentLocation" = "Position actuelle";
+"report.mapLocation" = "Position sur la carte";
+"report.searchAddress" = "Rechercher une adresse";
+"report.gettingLocation" = "Obtention de la position...";
+"report.usingCurrentLocation" = "Utilisation de votre position GPS actuelle";
+"report.usingMapLocation" = "Utilisation de la position sélectionnée sur la carte";
+"report.usingSearchedLocation" = "Utilisation de l'adresse recherchée";
+"report.searchForAddress" = "Recherchez une adresse pour signaler une place";
+"report.detailsHeader" = "Détails";
+"report.descriptionPlaceholder" = "Description (optionnelle)";
+"report.descriptionFooter" = "Ajoutez des détails utiles sur la place de stationnement";
+"report.addressPlaceholder" = "Rechercher une adresse...";
+"report.address" = "Adresse";
+"report.latitude" = "Latitude";
+"report.longitude" = "Longitude";
+"report.unableToGetLocation" = "Impossible d'obtenir la position";
+"report.failedToSubmit" = "Échec de l'envoi du signalement";
+"report.addressNotFound" = "Impossible de trouver cette adresse";
+"report.addressSearchFailed" = "Échec de la recherche d'adresse";
+
+// MARK: - Settings
+"settings.title" = "Paramètres";
+"settings.accountHeader" = "Compte";
+"settings.profile" = "Profil";
+"settings.permissionsHeader" = "Autorisations";
+"settings.locationAccess" = "Accès à la localisation";
+"settings.openSettings" = "Ouvrir les paramètres";
+"settings.locationFooter" = "L'accès à la localisation est nécessaire pour trouver des places de stationnement à proximité et en signaler de nouvelles";
+"settings.aboutHeader" = "À propos";
+"settings.version" = "Version";
+"settings.build" = "Build";
+"settings.resourcesHeader" = "Ressources";
+"settings.github" = "Dépôt GitHub";
+"settings.support" = "Assistance";
+"settings.languageHeader" = "Langue";
+"settings.language" = "Langue";
+"settings.languageFooter" = "Changez la langue de l'application. L'application sera actualisée pour appliquer le changement.";
+"settings.restartRequired" = "Redémarrage requis";
+"settings.restartMessage" = "Veuillez redémarrer l'application pour que le changement de langue prenne effet.";
+
+// MARK: - Location Permission Status
+"permission.notDetermined" = "Non déterminé";
+"permission.restricted" = "Restreint";
+"permission.denied" = "Refusé";
+"permission.always" = "Toujours";
+"permission.whileUsing" = "Pendant l'utilisation";
+
+// MARK: - Favorites
+"favorites.title" = "Places enregistrées";
+"favorites.loading" = "Chargement des favoris...";
+"favorites.empty.title" = "Aucune place enregistrée";
+"favorites.empty.message" = "Ajoutez des places de stationnement en favoris pour y accéder rapidement plus tard.";
+"favorites.expired" = "Expiré";
+"favorites.availableSpot" = "Place disponible";
+"favorites.takenSpot" = "Place occupée";
+
+// MARK: - Spot Detail
+"spotDetail.title" = "Détails de la place";
+"spotDetail.available" = "Disponible";
+"spotDetail.taken" = "Occupée";
+"spotDetail.reported" = "Signalée";
+"spotDetail.expires" = "Expire";
+"spotDetail.description" = "Description";
+"spotDetail.accuracy" = "Précision";
+"spotDetail.accuracyRatings" = "basé sur %d évaluation(s)";
+"spotDetail.oneRating" = "basé sur 1 évaluation";
+"spotDetail.multipleRatings" = "basé sur %d évaluations";
+"spotDetail.location" = "Emplacement";
+"spotDetail.markNotAvailable" = "Marquer comme indisponible";
+"spotDetail.accurate" = "Précis";
+"spotDetail.inaccurate" = "Imprécis";
+"spotDetail.thanks" = "Merci !";
+"spotDetail.alreadyRated" = "Déjà évalué";
+"spotDetail.alreadyRatedMessage" = "Vous avez déjà évalué cette place. Chaque utilisateur ne peut évaluer un signalement qu'une seule fois.";
+"spotDetail.ratingError" = "Une erreur s'est produite. Veuillez réessayer.";
+"spotDetail.ratingSuccess" = "Vos commentaires aident la communauté à trouver des places de stationnement plus facilement !";
+"spotDetail.updatedNotAvailable" = "Mise à jour : Place plus disponible";
+
+// MARK: - Auth - Sign In
+"signIn.title" = "SpotFinder";
+"signIn.email" = "E-mail";
+"signIn.password" = "Mot de passe";
+"signIn.button" = "Se connecter";
+"signIn.noAccount" = "Vous n'avez pas de compte ?";
+"signIn.signUp" = "S'inscrire";
+
+// MARK: - Auth - Sign Up
+"signUp.title" = "Créer un compte";
+"signUp.subtitle" = "Inscrivez-vous pour signaler et trouver des places de stationnement";
+"signUp.firstName" = "Prénom (optionnel)";
+"signUp.lastName" = "Nom (optionnel)";
+"signUp.email" = "E-mail";
+"signUp.password" = "Mot de passe";
+"signUp.confirmPassword" = "Confirmer le mot de passe";
+"signUp.button" = "S'inscrire";
+"signUp.passwordMismatch" = "Les mots de passe ne correspondent pas";
+
+// MARK: - Auth - Profile
+"profile.title" = "Profil";
+"profile.name" = "Nom";
+"profile.email" = "E-mail";
+"profile.memberSince" = "Membre depuis";
+"profile.signOut" = "Se déconnecter";
+
+// MARK: - Error Banner
+"error.defaultMessage" = "Une erreur s'est produite";
+
+// MARK: - API Errors
+"apiError.invalidURL" = "URL invalide";
+"apiError.networkError" = "Erreur réseau : %@";
+"apiError.invalidResponse" = "Réponse invalide du serveur";
+"apiError.decodingError" = "Échec du décodage de la réponse : %@";
+"apiError.serverError" = "Erreur serveur (%d) : %@";
+"apiError.noData" = "Aucune donnée reçue";
+"apiError.unauthorized" = "Accès non autorisé";
+"apiError.unknown" = "Une erreur inconnue s'est produite";

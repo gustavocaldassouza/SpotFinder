@@ -21,12 +21,12 @@ struct SignUpView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
-                Text("Create Account")
+                Text(L10n.SignUp.title)
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .padding(.top, 20)
                 
-                Text("Sign up to report and find parking spots")
+                Text(L10n.SignUp.subtitle)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
@@ -34,28 +34,28 @@ struct SignUpView: View {
                 
                 // Sign Up Form
                 VStack(spacing: 16) {
-                    TextField("First Name (Optional)", text: $firstName)
+                    TextField(L10n.SignUp.firstName, text: $firstName)
                         .textFieldStyle(.roundedBorder)
                         .textContentType(.givenName)
                     
-                    TextField("Last Name (Optional)", text: $lastName)
+                    TextField(L10n.SignUp.lastName, text: $lastName)
                         .textFieldStyle(.roundedBorder)
                         .textContentType(.familyName)
                     
-                    TextField("Email", text: $email)
+                    TextField(L10n.SignUp.email, text: $email)
                         .textFieldStyle(.roundedBorder)
                         .textContentType(.emailAddress)
                         .autocapitalization(.none)
                         .keyboardType(.emailAddress)
                     
-                    SecureField("Password", text: $password)
+                    SecureField(L10n.SignUp.password, text: $password)
                         .textFieldStyle(.roundedBorder)
                         .textContentType(.newPassword)
                         .onChange(of: password) { _ in
                             passwordMismatch = false
                         }
                     
-                    SecureField("Confirm Password", text: $confirmPassword)
+                    SecureField(L10n.SignUp.confirmPassword, text: $confirmPassword)
                         .textFieldStyle(.roundedBorder)
                         .textContentType(.newPassword)
                         .onChange(of: confirmPassword) { _ in
@@ -63,7 +63,7 @@ struct SignUpView: View {
                         }
                     
                     if passwordMismatch {
-                        Text("Passwords do not match")
+                        Text(L10n.SignUp.passwordMismatch)
                             .font(.caption)
                             .foregroundColor(.red)
                     }
@@ -100,7 +100,7 @@ struct SignUpView: View {
                                 .tint(.white)
                                 .frame(maxWidth: .infinity)
                         } else {
-                            Text("Sign Up")
+                            Text(L10n.SignUp.button)
                                 .fontWeight(.semibold)
                                 .frame(maxWidth: .infinity)
                         }
@@ -116,7 +116,7 @@ struct SignUpView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancel") {
+                    Button(L10n.Common.cancel) {
                         dismiss()
                     }
                 }
