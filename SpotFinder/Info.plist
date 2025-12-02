@@ -4,6 +4,8 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>SpotFinder</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -18,7 +20,18 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>fr</string>
+	</array>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.navigation</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>SpotFinder needs your location to show nearby parking spots and help you report new spots.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>SpotFinder needs your location to show nearby parking spots and help you report new spots.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
@@ -28,12 +41,17 @@
 		<dict/>
 	</dict>
 	<key>UILaunchScreen</key>
-	<dict/>
+	<dict>
+		<key>UIColorName</key>
+		<string>PrimaryColor</string>
+		<key>UIImageName</key>
+		<string></string>
+	</dict>
+	<key>UIRequiresFullScreen</key>
+	<true/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
@@ -42,6 +60,12 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>UIStatusBarStyle</key>
+	<string>UIStatusBarStyleLightContent</string>
+	<key>UIUserInterfaceStyle</key>
+	<string>Automatic</string>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
