@@ -1,12 +1,14 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { eq, and, gte, lte, sql } from 'drizzle-orm';
+import { eq, and, gte, lte, sql, inArray } from 'drizzle-orm';
 import type { Database } from '../database/client';
 import { DATABASE_TOKEN } from '../database/database.module';
 import {
   parkingReports,
   reportRatings,
+  favorites,
   NewParkingReport,
   NewReportRating,
+  NewFavorite,
 } from '../database/schema';
 import {
   ParkingReportEntity,
@@ -157,5 +159,83 @@ export class ParkingRepository {
       totalRatings: report.totalRatings,
       isActive: report.isActive,
     };
+  }
+
+  // Favorites methods
+  async addFavorite(data: NewFavorite) {
+    // Check if already favorited
+    const [existing] = await this.db
+      .select()
+      .from(favorites)
+      .where(
+        and(
+          eq(favorites.userId, data.userId),
+          eq(favorites.reportId, data.reportId),
+        ),
+      )
+      .limit(1);
+
+    if (existing) {
+      return existing;
+    }
+
+    const [favorite] = await this.db
+      .insert(favorites)
+      .values(data)
+      .returning();
+
+    return favorite;
+  }
+
+  async removeFavorite(userId: string, reportId: string) {
+    const result = await this.db
+      .delete(favorites)
+      .where(
+        and(eq(favorites.userId, userId), eq(favorites.reportId, reportId)),
+      )
+      .returning();
+
+    return result.length > 0;
+  }
+
+  async getFavorites(userId: string): Promise<ParkingReportEntity[]> {
+    const userFavorites = await this.db
+      .select({ reportId: favorites.reportId })
+      .from(favorites)
+      .where(eq(favorites.userId, userId));
+
+    if (userFavorites.length === 0) {
+      return [];
+    }
+
+    const reportIds = userFavorites.map((f) => f.reportId);
+
+    const reports = await this.db
+      .select()
+      .from(parkingReports)
+      .where(inArray(parkingReports.id, reportIds));
+
+    return reports.map((report) => this.mapToEntity(report));
+  }
+
+  async isFavorite(userId: string, reportId: string): Promise<boolean> {
+    const [favorite] = await this.db
+      .select()
+      .from(favorites)
+      .where(
+        and(eq(favorites.userId, userId), eq(favorites.reportId, reportId)),
+      )
+      .limit(1);
+
+    return !!favorite;
+  }
+
+  async getFavoriteIds(userId: string): Promise<string[]> {
+    const userFavorites = await this.db
+      .select({ reportId: favorites.reportId })
+      .from(favorites)
+      .where(eq(favorites.userId, userId));
+
+    return userFavorites.map((f) => f.reportId);
   }
 }

@@ -166,4 +166,150 @@ actor APIClient {
             throw APIError.networkError(error)
         }
     }
+    
+    // MARK: - Favorites
+    
+    func getFavorites() async throws -> [ParkingReport] {
+        let urlString = "\(baseURL)/api/parking-reports/favorites"
+        
+        guard let url = URL(string: urlString) else {
+            throw APIError.invalidURL
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        guard let token = await AuthService.shared.getAccessToken() else {
+            throw APIError.unauthorized
+        }
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
+        do {
+            let (data, response) = try await session.data(for: request)
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw APIError.invalidResponse
+            }
+            
+            guard (200...299).contains(httpResponse.statusCode) else {
+                let errorMessage = String(data: data, encoding: .utf8)
+                throw APIError.serverError(httpResponse.statusCode, errorMessage)
+            }
+            
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .iso8601
+            
+            return try decoder.decode([ParkingReport].self, from: data)
+        } catch let error as APIError {
+            throw error
+        } catch {
+            throw APIError.networkError(error)
+        }
+    }
+    
+    func getFavoriteIds() async throws -> [String] {
+        let urlString = "\(baseURL)/api/parking-reports/favorites/ids"
+        
+        guard let url = URL(string: urlString) else {
+            throw APIError.invalidURL
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        guard let token = await AuthService.shared.getAccessToken() else {
+            throw APIError.unauthorized
+        }
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
+        do {
+            let (data, response) = try await session.data(for: request)
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw APIError.invalidResponse
+            }
+            
+            guard (200...299).contains(httpResponse.statusCode) else {
+                let errorMessage = String(data: data, encoding: .utf8)
+                throw APIError.serverError(httpResponse.statusCode, errorMessage)
+            }
+            
+            let decoder = JSONDecoder()
+            return try decoder.decode([String].self, from: data)
+        } catch let error as APIError {
+            throw error
+        } catch {
+            throw APIError.networkError(error)
+        }
+    }
+    
+    func addFavorite(reportId: String) async throws {
+        let urlString = "\(baseURL)/api/parking-reports/\(reportId)/favorite"
+        
+        guard let url = URL(string: urlString) else {
+            throw APIError.invalidURL
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        guard let token = await AuthService.shared.getAccessToken() else {
+            throw APIError.unauthorized
+        }
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
+        do {
+            let (data, response) = try await session.data(for: request)
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw APIError.invalidResponse
+            }
+            
+            guard (200...299).contains(httpResponse.statusCode) else {
+                let errorMessage = String(data: data, encoding: .utf8)
+                throw APIError.serverError(httpResponse.statusCode, errorMessage)
+            }
+        } catch let error as APIError {
+            throw error
+        } catch {
+            throw APIError.networkError(error)
+        }
+    }
+    
+    func removeFavorite(reportId: String) async throws {
+        let urlString = "\(baseURL)/api/parking-reports/\(reportId)/favorite"
+        
+        guard let url = URL(string: urlString) else {
+            throw APIError.invalidURL
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        guard let token = await AuthService.shared.getAccessToken() else {
+            throw APIError.unauthorized
+        }
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
+        do {
+            let (data, response) = try await session.data(for: request)
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw APIError.invalidResponse
+            }
+            
+            guard (200...299).contains(httpResponse.statusCode) else {
+                let errorMessage = String(data: data, encoding: .utf8)
+                throw APIError.serverError(httpResponse.statusCode, errorMessage)
+            }
+        } catch let error as APIError {
+            throw error
+        } catch {
+            throw APIError.networkError(error)
+        }
+    }
 }

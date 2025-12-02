@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Put,
+  Delete,
   Body,
   Param,
   Query,
@@ -40,10 +41,29 @@ export class ParkingController {
     return reports;
   }
 
+  @Get('favorites')
+  @UseGuards(JwtAuthGuard)
+  async getFavorites(@CurrentUser() user: User) {
+    return this.parkingService.getFavorites(user.id);
+  }
+
+  @Get('favorites/ids')
+  @UseGuards(JwtAuthGuard)
+  async getFavoriteIds(@CurrentUser() user: User) {
+    return this.parkingService.getFavoriteIds(user.id);
+  }
+
   @Get(':id')
   async getReportById(@Param('id') id: string) {
     const report = await this.parkingService.getReportById(id);
     return report;
+  }
+
+  @Get(':id/favorite')
+  @UseGuards(JwtAuthGuard)
+  async isFavorite(@Param('id') id: string, @CurrentUser() user: User) {
+    const isFavorite = await this.parkingService.isFavorite(id, user.id);
+    return { isFavorite };
   }
 
   @Post()
@@ -55,6 +75,19 @@ export class ParkingController {
   ) {
     const result = await this.parkingService.createReport(dto, user.id);
     return result;
+  }
+
+  @Post(':id/favorite')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.CREATED)
+  async addFavorite(@Param('id') id: string, @CurrentUser() user: User) {
+    return this.parkingService.addFavorite(id, user.id);
+  }
+
+  @Delete(':id/favorite')
+  @UseGuards(JwtAuthGuard)
+  async removeFavorite(@Param('id') id: string, @CurrentUser() user: User) {
+    return this.parkingService.removeFavorite(id, user.id);
   }
 
   @Put(':id/rate')

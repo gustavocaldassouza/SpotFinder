@@ -150,4 +150,46 @@ export class ParkingService {
 
     throw new NotFoundException(`Failed to retrieve updated report`);
   }
+
+  // Favorites methods
+  async addFavorite(reportId: string, userId: string) {
+    const report = await this.repository.findById(reportId);
+    if (!report) {
+      throw new NotFoundException(`Report with ID ${reportId} not found`);
+    }
+
+    await this.repository.addFavorite({
+      userId,
+      reportId,
+    });
+
+    return { success: true, message: 'Report added to favorites' };
+  }
+
+  async removeFavorite(reportId: string, userId: string) {
+    const removed = await this.repository.removeFavorite(userId, reportId);
+    
+    if (!removed) {
+      throw new NotFoundException(`Favorite not found`);
+    }
+
+    return { success: true, message: 'Report removed from favorites' };
+  }
+
+  async getFavorites(userId: string) {
+    const reports = await this.repository.getFavorites(userId);
+
+    return reports.map((report) => ({
+      ...report,
+      createdAgo: calculateTimeAgo(report.createdAt),
+    }));
+  }
+
+  async getFavoriteIds(userId: string) {
+    return this.repository.getFavoriteIds(userId);
+  }
+
+  async isFavorite(reportId: string, userId: string) {
+    return this.repository.isFavorite(userId, reportId);
+  }
 }
