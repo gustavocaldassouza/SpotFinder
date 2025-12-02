@@ -8,20 +8,23 @@
 import Foundation
 
 enum AppConfiguration {
+    // Set to true to use local development server, false for production
+    private static let useLocalServer = false
+    
     static var apiBaseURL: String {
-        #if DEBUG
-        return "http://localhost:3000"
-        #else
-        return AppEnvironment.apiBaseURL
-        #endif
+        if useLocalServer {
+            return "http://localhost:3000"
+        } else {
+            return AppEnvironment.apiBaseURL
+        }
     }
     
     static var wsBaseURL: String {
-        #if DEBUG
-        return "ws://localhost:3000"
-        #else
-        return AppEnvironment.wsBaseURL
-        #endif
+        if useLocalServer {
+            return "ws://localhost:3000"
+        } else {
+            return AppEnvironment.wsBaseURL
+        }
     }
     
     static let nearbyRadius: Double = 500

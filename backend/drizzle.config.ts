@@ -9,7 +9,7 @@ export default defineConfig({
   dialect: 'postgresql',
   dbCredentials: {
     url: process.env.DATABASE_SSL === 'true' 
-      ? `${process.env.DATABASE_URL}?sslmode=require`
+      ? `${process.env.DATABASE_URL}?sslmode=no-verify`
       : process.env.DATABASE_URL || '',
   },
   verbose: true,

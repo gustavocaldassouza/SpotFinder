@@ -11,7 +11,7 @@ export const getDatabase = (connectionString: string) => {
       max: 10,
       idle_timeout: 20,
       connect_timeout: 10,
-      ssl: process.env.DATABASE_SSL === 'true' ? 'require' : false,
+      ssl: process.env.DATABASE_SSL === 'true' ? { rejectUnauthorized: false } : false,
     });
     db = drizzle(client, { schema });
   }
