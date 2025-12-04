@@ -33,4 +33,4 @@ COPY --from=builder /app/src/database/migrations ./dist/database/migrations
 EXPOSE 3000
 
 # Run migrations and start the server
-CMD ["node", "dist/main"]
+CMD ["sh", "-c", "node dist/database/migrate.js && node dist/main"]
