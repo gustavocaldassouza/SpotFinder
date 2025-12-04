@@ -150,6 +150,19 @@ See the `/backend` directory for the NestJS backend implementation with:
 
 Refer to `/backend/README.md` for setup instructions.
 
+### Deployment (Coolify)
+
+This project is configured for deployment with [Coolify](https://coolify.io/).
+
+1. Connect your repository to Coolify.
+2. Select the `docker-compose.yml` deployment type.
+3. Coolify will detect the `docker-compose.yml` in the root directory.
+4. Set the following environment variables in Coolify for the `api` service (or use the defaults provided in docker-compose.yml):
+   - `JWT_SECRET`: Secret key for JWT signing.
+   - `POSTGRES_PASSWORD`: Database password (should match the one set for `postgres` service).
+   - `DATABASE_URL`: `postgresql://spotfinder:<password>@postgres:5432/spotfinder` (or use internal Coolify DB URL).
+5. Deploy! The application will automatically run migrations on startup.
+
 For authentication implementation details, see:
 
 - `AUTHENTICATION.md` - Detailed authentication documentation
